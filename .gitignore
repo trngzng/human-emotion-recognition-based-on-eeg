@@ -1,0 +1,9 @@
+.tmp.driveupload/
+src/firmware/stm32/components/usb-fs/Debug/
+tool/
+src/hardware/board/src/eeg-measurement-circuit/__Previews/
+src/hardware/board/src/eeg-measurement-circuit/History/
+src/hardware/board/src/eeg-measurement-circuit/Project Logs for eeg-measurement-circuit/
+src/hardware/board/src/eeg-measurement-circuit/Project Outputs for eeg-measurement-circuit/
+src/software/src/EEG-Viewer_101/untitled1/.qtcreator/Python_3_12_8venv/
+src/software/src/machine-learning/dataset/
