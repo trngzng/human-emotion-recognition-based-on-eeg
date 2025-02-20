@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->cBSerialName->installEventFilter(this);
 
     /* List all available COM */
-    QList<QSerialPortInfo> ports = info.availablePorts();
+    QList<QSerialPortInfo> ports = serialDevice.getAvailablePorts();
     QList<QString> strPorts;
     for (int i = 0; i < ports.size(); i++)
     {
@@ -22,14 +22,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->cBSerialName->addItems(strPorts);
 
     /* List all baudrates supported */
-    QList<qint32> bauRates = info.standardBaudRates();
+    QList<qint32> bauRates = serialDevice.getStandardBaudRates();
     QList<QString> strBaudRates;
     for (int i = 0; i < bauRates.size(); i++)
     {
         strBaudRates.append(QString::number(bauRates.at(i)));
     }
     ui->cBSerialBaud->addItems(strBaudRates);
-
 }
 
 MainWindow::~MainWindow()
@@ -41,13 +40,7 @@ void MainWindow::on_pBtnSerialConnect_clicked()
 {
     if (ui->pBtnSerialConnect->text() == "Connect")
     {
-        if(serial.begin(QSerialPortInfo::availablePorts().at(ui->cBSerialName->currentIndex()).portName(),
-                         ui->cBSerialBaud->currentText().toUInt(),
-                         QSerialPort::Data8,
-                         QSerialPort::NoParity,
-                         QSerialPort::OneStop,
-                         QSerialPort::NoFlowControl,
-                         false))
+        if(serialDevice.connect(QSerialPortInfo::availablePorts().at(ui->cBSerialName->currentIndex()).portName(), ui->cBSerialBaud->currentText().toUInt()))
         {
             ui->pBtnSerialConnect->setText("Disconnect");
             ui->pBtnSerialConnect->setStyleSheet("QPushButton {color: rgb(170, 0, 0)}");
@@ -59,32 +52,28 @@ void MainWindow::on_pBtnSerialConnect_clicked()
         }
         else
         {
-            return;
+            ui->tBrTransceivedData->append("<span style=\"color: rgb(255, 178, 44);\">"
+                                           + ui->cBSerialName->currentText()
+                                           + " connecting ERROR "
+                                           + "</span>");
         }
     }
     else if ((ui->pBtnSerialConnect->text() == "Disconnect"))
     {
-        if(serial.end())
-        {
-            ui->pBtnSerialConnect->setText("Connect");
-            ui->pBtnSerialConnect->setStyleSheet("QPushButton {color: rgb(0, 85, 0)}");
-            ui->cBSerialName->setDisabled(false);
-            ui->cBSerialBaud->setDisabled(false);
-            ui->tBrTransceivedData->append("<span style=\"color: rgb(170,0,0);\">"
-                                           + ui->cBSerialName->currentText()
-                                           + " DISCONNECTED" + "</span>");
-        }
-        else
-        {
-            return;
-        }
+        serialDevice.disconnect();
+        ui->pBtnSerialConnect->setText("Connect");
+        ui->pBtnSerialConnect->setStyleSheet("QPushButton {color: rgb(0, 85, 0)}");
+        ui->cBSerialName->setDisabled(false);
+        ui->cBSerialBaud->setDisabled(false);
+        ui->tBrTransceivedData->append("<span style=\"color: rgb(170,0,0);\">"
+                                       + ui->cBSerialName->currentText()
+                                       + " DISCONNECTED" + "</span>");
     }
-
 }
 
 void MainWindow::updateSerialDeviceList()
 {
-    QList<QSerialPortInfo> devices = info.availablePorts();
+    QList<QSerialPortInfo> devices = serialDevice.getAvailablePorts();
     QStringList portNames;
     static QStringList portNamesOld;
 
@@ -111,7 +100,6 @@ void MainWindow::updateSerialDeviceList()
 
 
     portNamesOld = portNames;
-
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)

@@ -13,10 +13,12 @@ VPATH += src/
 
 SOURCES += \
     main.cpp \
+    src/dataparser.cpp \
     src/mainwindow.cpp \
     src/serial.cpp
 
 HEADERS += \
+    inc/dataparse.h \
     inc/mainwindow.h \
     inc/serial.h
 

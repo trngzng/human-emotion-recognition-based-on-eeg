@@ -1,47 +1,42 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
+#include <QThread>
 #include <QObject>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QByteArray>
+#include <QTime>
 
-enum SERIAL_READ_MODE
-{
-    canReadLine_ReadLine = 0,
-    canReadLine_ReadAll,
-    bytesAvailable_ReadLine,
-    bytesAvailable_ReadAll
-};
-
-class Serial : public QObject
+class Serial : public QThread
 {
     Q_OBJECT
 public:
     explicit Serial(QObject *parent = nullptr);
-    ~Serial();
-    bool begin(QString parsedPortName, int parsedBaudRate, int dataBits, int parity, int stopBits, int flowControl, bool dtrOn);
-    bool begin(QString parsedPortName, qint32 parsedBaudRate, QString dataBits, QString parity, QString stopBits, QString flowControl, bool dtrOn);
-    bool end();
-    bool isOpen();
-    bool send(const QByteArray &message);
-    bool send(QString message);
-    bool setReadMode(int mode);
-    int getAvailablePortsCount();
-    QList<QSerialPortInfo> getAvailablePorts();
-    QString getSerialInfo();
-    QString getString(bool clearBuffer = true);
-    void clearAll(bool clearHardwareBuffers = false);
-    void clearString();
-    QList<int> getAvailableBaudRates();
-signals:
 
-public slots:
-    void readString();
+    bool connect(QString nameCOM, quint32 baud);
+    void disconnect();
+    void transmitData(const QList<QString> &data);
+    bool connectionState();
+    QList<QSerialPortInfo> getAvailablePorts();
+    QList<int> getStandardBaudRates();
+
+signals:
+    void receivedData(QList<QByteArray>);
+    void connectionError(QString, const Qt::GlobalColor);
+    void timeout(QString, const Qt::GlobalColor);
+
+private slots:
+    void getSerialData();
+
+protected:
+    void run();
 
 private:
-    QSerialPort *serialDevice = nullptr;
-    QString serialInputString;
-    SERIAL_READ_MODE stringReadMode = canReadLine_ReadLine;
+    QSerialPort serial;
+    QSerialPortInfo info;
+    bool isConnected = false;
+    QList<QByteArray> resMessBuf;
 };
 
 #endif // SERIAL_H

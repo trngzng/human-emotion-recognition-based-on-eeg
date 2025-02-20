@@ -28,8 +28,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSerialPortInfo info;
-    Serial serial;
-
+    Serial serialDevice;
 };
+
+
 #endif // MAINWINDOW_H
