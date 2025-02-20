@@ -18,7 +18,7 @@ SOURCES += \
     src/serial.cpp
 
 HEADERS += \
-    inc/dataparse.h \
+    inc/dataparser.h \
     inc/mainwindow.h \
     inc/serial.h
 

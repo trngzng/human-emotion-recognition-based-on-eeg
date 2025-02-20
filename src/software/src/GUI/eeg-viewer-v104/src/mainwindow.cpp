@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
         strBaudRates.append(QString::number(bauRates.at(i)));
     }
     ui->cBSerialBaud->addItems(strBaudRates);
+
+    connect(&serialDevice, &Serial::receivedData, &dataParser, &DataParser::processInputData);
 }
 
 MainWindow::~MainWindow()

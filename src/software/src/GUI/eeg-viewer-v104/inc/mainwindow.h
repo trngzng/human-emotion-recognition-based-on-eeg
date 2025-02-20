@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "inc/serial.h"
+#include "inc/dataparser.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,6 +30,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Serial serialDevice;
+    DataParser dataParser;
 };
 
 
