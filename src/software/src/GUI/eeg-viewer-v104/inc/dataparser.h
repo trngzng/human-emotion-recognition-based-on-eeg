@@ -3,6 +3,18 @@
 
 #include <QThread>
 
+#pragma pack(1)  // Chống trình biên dịch tự động canh chỉnh bộ nhớ
+typedef struct
+{
+    uint8_t sop;
+    uint8_t length : 5;
+    uint8_t cmd : 3;
+    uint8_t data[32];
+    uint16_t crc;
+    uint16_t eop;
+} PacketTypeDef;
+#pragma pack()
+
 enum ParserState {
     IDLE,
     WAIT_CMD,
@@ -19,17 +31,21 @@ public:
     ~DataParser();
 
 public slots:
-    void processInputData(const QList<QByteArray> &inputData);
+    void packetDectection(const QList<QByteArray> &inputData);
 
 signals:
-    void parsedPacket(const QByteArray &data);
+    void receivedPacket(const QByteArray &data);
+    void parsedPacket(const PacketTypeDef &packet);
 
 protected:
     void run() override;
 
 private:
-    ParserState currentState;
+    void packetParser(const QByteArray &data);
 
+private:
+    ParserState currentState;
+    PacketTypeDef currentPacket;
 };
 
 #endif // DATAPARSER_H

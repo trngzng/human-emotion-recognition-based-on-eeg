@@ -51,7 +51,7 @@ PrefsRevisionGUID=
 
 [Document1]
 DocumentPath=Block Diagram.SchDoc
-AnnotationEnabled=0
+AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
@@ -68,7 +68,7 @@ DocumentUniqueId=MTLNPGYQ
 
 [Document2]
 DocumentPath=Power Supplies.SchDoc
-AnnotationEnabled=0
+AnnotationEnabled=1
 AnnotateStartValue=100
 AnnotationIndexControlEnabled=1
 AnnotateSuffix=
@@ -320,6 +320,23 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
+
+[Document17]
+DocumentPath=PCB2.PcbDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=WMYINIRR
 
 [GeneratedDocument1]
 DocumentPath=Project Outputs for eeg-measurement-circuit\PCB\17-19_2025-02-03_eeg-measurement-circuit_Fabrication\PCB1-RoundHoles.TXT
@@ -2050,13 +2067,15 @@ PartTypes=0
 
 [NetInfos]
 Net1=NetName=-2.5|NetColor=clFuchsia
-Net2=NetName=+2.5|NetColor=clYellow
-Net3=NetName=+3.3|NetColor=$000099FF
-Net4=NetName=+5|NetColor=clRed
-Net5=NetName=+5_USB|NetColor=clAqua
-Net6=NetName=EEG_CH1-|NetColor=clBlack
-Net7=NetName=EEG_CH1+|NetColor=clBlack
-Net8=NetName=GND|NetColor=$00134E27
+Net2=NetName=-2.5_A|NetColor=$00794DA6
+Net3=NetName=+2.5|NetColor=clYellow
+Net4=NetName=+2.5_A|NetColor=$0000607F
+Net5=NetName=+3.3|NetColor=$000099FF
+Net6=NetName=+5|NetColor=clRed
+Net7=NetName=+5_USB|NetColor=clAqua
+Net8=NetName=EEG_CH1-|NetColor=clBlack
+Net9=NetName=EEG_CH1+|NetColor=clBlack
+Net10=NetName=GND|NetColor=$00134E27
 
 [Comparison Options]
 ComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0

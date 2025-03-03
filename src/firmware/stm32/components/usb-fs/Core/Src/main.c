@@ -68,7 +68,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 float testVar1[8] = {1.23, 2.34, 3.45, 4.56, 5.67, 6.78, 7.89, 8.90};
 float testVar2[8] = {12.3, 23.4, 34.5, 45.6, 56.7, 67.8, 78.9, 89.0};
 SYS_SERIAL_HandleTypeDef vcp = {0};
-uint32_t preTick = 0;
+uint32_t packetCounter = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -142,10 +142,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 //	  CDC_Transmit_FS((uint8_t *)&packetBuf, sizeof(packetBuf));
 //    printf("%d\r\n", sizeof(packetBuf));
-    preTick = HAL_GetTick();
     SYS_Serial_SendSamples(&vcp, testVar1, 8);
-    preTick = HAL_GetTick() - preTick;
-	  SYS_Serial_SendSamples(&vcp, testVar2, 8);
+    HAL_Delay(2000);
   }
   /* USER CODE END 3 */
 }

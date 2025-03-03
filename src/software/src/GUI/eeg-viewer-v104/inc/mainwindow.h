@@ -20,6 +20,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void fillParsedPackets(const PacketTypeDef &packet);
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 

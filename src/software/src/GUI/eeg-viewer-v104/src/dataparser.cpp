@@ -8,6 +8,7 @@ const uint8_t endOfPacket = 0x55;
 DataParser::DataParser(QObject *parent)
     : QThread(parent)
 {
+    connect(this, &DataParser::receivedPacket, this, &DataParser::packetParser);
 }
 
 DataParser::~DataParser()
@@ -19,12 +20,10 @@ DataParser::~DataParser()
     }
 }
 
-void DataParser::processInputData(const QList<QByteArray> &inputData)
+void DataParser::packetDectection(const QList<QByteArray> &inputData)
 {
     static QByteArray packetBuffer;
-    static int expectedDataLength = 0; // Số byte dữ liệu cần nhận (có thể xác định từ byte lệnh)
 
-    // Duyệt qua từng chunk dữ liệu
     for (const QByteArray &chunk : inputData)
     {
         for (int i = 0; i < chunk.size(); ++i)
@@ -33,7 +32,6 @@ void DataParser::processInputData(const QList<QByteArray> &inputData)
             switch (DataParser::currentState)
             {
             case IDLE:
-                // Chờ nhận byte bắt đầu
                 if (byte == startOfPacket)
                 {
                     packetBuffer.clear();
@@ -42,25 +40,19 @@ void DataParser::processInputData(const QList<QByteArray> &inputData)
                 }
                 break;
             case WAIT_CMD:
-                // Byte tiếp theo là lệnh hoặc byte chỉ báo độ dài
                 packetBuffer.append(byte);
-                // Ví dụ: giả sử byte này chứa thông tin về độ dài payload ở 5 bit thấp
-                expectedDataLength = (byte & 0x1F) + 1;
                 DataParser::currentState = WAIT_DATA;
                 break;
             case WAIT_DATA:
                 packetBuffer.append(byte);
-                if (packetBuffer.size() >= (2 + expectedDataLength))
+                if (packetBuffer.size() >= 34)
                 {
-                    // Đã nhận đủ dữ liệu payload, chuyển sang nhận CRC hoặc end tùy thiết kế
-                    // Nếu không có CRC, có thể chuyển luôn sang WAIT_END
                     DataParser::currentState = WAIT_END;
                 }
                 break;
             case WAIT_CRC:
-                // Nếu bạn có thêm CRC, thực hiện ở đây: append byte, sau đó kiểm tra nếu đủ 2 byte CRC rồi chuyển sang WAIT_END
                 packetBuffer.append(byte);
-                if (packetBuffer.size() >= 2 + expectedDataLength + 2)
+                if (packetBuffer.size() >= 36)
                 {
                     DataParser::currentState = WAIT_END;
                 }
@@ -69,20 +61,27 @@ void DataParser::processInputData(const QList<QByteArray> &inputData)
                 packetBuffer.append(byte);
                 if (byte == endOfPacket) {
                     // Gói tin hoàn chỉnh được nhận
-                    emit parsedPacket(packetBuffer);  // Hàm xử lý gói tin, tự định nghĩa theo logic của bạn
+                    emit receivedPacket(packetBuffer);
+                    DataParser::currentState = IDLE;
+                    packetBuffer.clear();
                 }
-                // Sau khi xử lý, reset FSM
-                DataParser::currentState = IDLE;
-                packetBuffer.clear();
-                expectedDataLength = 0;
+
                 break;
             default:
                 DataParser::currentState = IDLE;
                 packetBuffer.clear();
-                expectedDataLength = 0;
                 break;
             }
         }
+    }
+}
+
+void DataParser::packetParser(const QByteArray &data)
+{
+    if ((static_cast<uint8_t>(data.at(0)) == startOfPacket) && (static_cast<uint8_t>(data.at(data.size() - 1)) == endOfPacket))
+    {
+        memcpy(&(DataParser::currentPacket), data.constData(), sizeof(PacketTypeDef));
+        emit parsedPacket(DataParser::currentPacket);
     }
 }
 

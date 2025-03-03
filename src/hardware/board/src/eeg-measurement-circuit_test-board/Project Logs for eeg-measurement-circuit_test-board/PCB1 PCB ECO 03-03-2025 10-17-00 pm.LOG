@@ -1,0 +1,48 @@
+Removed Pin From Net: NetName=+2.5 Pin=C112-2
+Removed Pin From Net: NetName=+2.5 Pin=C113-2
+Removed Pin From Net: NetName=+2.5 Pin=C117-2
+Removed Pin From Net: NetName=+2.5 Pin=C118-2
+Removed Pin From Net: NetName=-2.5 Pin=C121-2
+Removed Pin From Net: NetName=-2.5 Pin=C122-2
+Removed Pin From Net: NetName=+2.5 Pin=D103-2
+Removed Pin From Net: NetName=+2.5 Pin=FB100-1
+Removed Pin From Net: NetName=-2.5 Pin=FB101-1
+Removed Pin From Net: NetName=-2.5 Pin=R105-2
+Removed Pin From Net: NetName=+2.5 Pin=SB102-1
+Removed Pin From Net: NetName=-2.5 Pin=SB103-1
+Removed Pin From Net: NetName=+2.5 Pin=U102-2
+Added Component: Designator=U400(ST-64-2_ADI)
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "Buy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://www.digikey.com/en/products/detail/analog-devices-inc/AD7768-4BSTZ-RL/6056981"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "Analog Devices Inc"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Data Acquisition"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "AD7768-4BSTZ-RL"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=+2.5 Pin=C114-2
+Added Pin To Net: NetName=+2.5 Pin=C115-2
+Added Pin To Net: NetName=-2.5 Pin=C123-2
+Added Pin To Net: NetName=-2.5 Pin=C124-2
+Added Pin To Net: NetName=+2.5 Pin=FB100-2
+Added Pin To Net: NetName=-2.5 Pin=FB101-2
+Change Net Name : Old Net Name=+2.5 New Net Name=+2.5_A
+Change Net Name : Old Net Name=-2.5 New Net Name=-2.5_A
+Change Net Color : Old Net Color=Yellow New Net Color=RGB(127, 96, 0)
+Change Net Color : Old Net Color=Fuchsia New Net Color=RGB(166, 77, 121)
+Added Pin To Net: NetName=+2.5 Pin=C112-2
+Added Pin To Net: NetName=+2.5 Pin=C113-2
+Added Pin To Net: NetName=+2.5 Pin=C117-2
+Added Pin To Net: NetName=+2.5 Pin=C118-2
+Added Pin To Net: NetName=+2.5 Pin=D103-2
+Added Pin To Net: NetName=+2.5 Pin=FB100-1
+Added Pin To Net: NetName=+2.5 Pin=SB102-1
+Added Pin To Net: NetName=+2.5 Pin=U102-2
+Added Net: Name=+2.5
+Added Pin To Net: NetName=-2.5 Pin=C121-2
+Added Pin To Net: NetName=-2.5 Pin=C122-2
+Added Pin To Net: NetName=-2.5 Pin=FB101-1
+Added Pin To Net: NetName=-2.5 Pin=R105-2
+Added Pin To Net: NetName=-2.5 Pin=SB103-1
+Added Net: Name=-2.5
+Add Class: Class already exists: Designator
+Add Class: Class already exists: Designator
+Add Class: Class already exists: Designator

@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     ui->cBSerialName->addItems(strPorts);
 
+    ui->cBSerialBaud->setEditable(true);
+
     /* List all baudrates supported */
     QList<qint32> bauRates = serialDevice.getStandardBaudRates();
     QList<QString> strBaudRates;
@@ -30,7 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     ui->cBSerialBaud->addItems(strBaudRates);
 
-    connect(&serialDevice, &Serial::receivedData, &dataParser, &DataParser::processInputData);
+    connect(&serialDevice, &Serial::receivedData, &dataParser, &DataParser::packetDectection, Qt::QueuedConnection);
+    connect(&dataParser, &DataParser::parsedPacket, this, &MainWindow::fillParsedPackets, Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow()
@@ -112,4 +115,17 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         return false;
     }
         return QMainWindow::eventFilter(obj, event);
+}
+
+void MainWindow::fillParsedPackets(const PacketTypeDef &packet)
+{
+    ui->tBrTransceivedData->append("CMD = " + QString("%1 ").arg(packet.cmd, 2, 16, QChar('0')).toUpper());
+    ui->tBrTransceivedData->append("Length = " + QString("%1 ").arg(packet.length, 2, 16, QChar('0')).toUpper());
+    QString str;
+    for (int i = 0; i < 32; i++) {
+        str += QString("%1 ").arg(packet.data[i], 2, 16, QChar('0')).toUpper();
+    }
+    ui->tBrTransceivedData->append("Data = " + str);
+    ui->tBrTransceivedData->append("CRC = " + QString("%1 ").arg(packet.crc, 2, 16, QChar('0')).toUpper());
+    ui->tBrTransceivedData->append("----------------------");
 }
