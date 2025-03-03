@@ -1,0 +1,16 @@
+Added Component: Designator=TP305(TestPoint_THTPad_D1.5mm_Drill0.7mm)
+Add component (AddParameter): Name = "Datasheet"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supply Name"; Value = "BanLinhKien"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supply Part Number"; Value = "Test Point TEST-1BK"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Supply URL"; Value = "https://banlinhkien.com/test-point-test1bk-mau-den-5c-p18255999.html"; VariantName = "[No Variations]"
+Added Component: Designator=U400(ST-64-2_ADI)
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "Buy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://www.digikey.com/en/products/detail/analog-devices-inc/AD7768-4BSTZ-RL/6056981"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "Analog Devices Inc"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Data Acquisition"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "AD7768-4BSTZ-RL"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetC320_1 Pin=TP305-1
+Add Class: Class already exists: Designator
+Add Class: Class already exists: Designator
+Add Class: Class already exists: Designator

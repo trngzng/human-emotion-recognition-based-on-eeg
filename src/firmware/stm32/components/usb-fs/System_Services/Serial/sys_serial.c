@@ -19,7 +19,7 @@
 
 /* Private defines ---------------------------------------------------- */
 #define PACKET_SOP  (0xAAU)
-#define PACKET_EOP  (0x5555U)
+#define PACKET_EOP  (0x55U)
 
 /* Private enumerate/structure ---------------------------------------- */
 /**
@@ -39,13 +39,13 @@ typedef struct __attribute__((packed))
   uint8_t cmd : 3;
   uint8_t data[32];
   uint16_t crc;
-  uint16_t eop;
+  uint8_t eop;
 } SYS_SERIAL_PacketTypeDef;
 
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
-
+extern uint32_t packetCounter;
 /* Private variables -------------------------------------------------- */
 SYS_SERIAL_PacketTypeDef packetBuf = {PACKET_SOP,
                                       SYS_SERIAL_CMD_DEVICE_MODE,
@@ -78,6 +78,7 @@ SYS_StatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, floa
   __ASSERT((num > 0) && (num <= 8), SYS_ERROR);
 
   uint8_t result;
+  packetBuf.crc = packetCounter++;
 
   for (uint_fast8_t i = 0; i < num; i++)
   {
@@ -90,7 +91,9 @@ SYS_StatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, floa
   }
   packetBuf.length = num*sizeof(float) - 1;
 
-  result = CDC_Transmit_FS((uint8_t *)&packetBuf, sizeof(packetBuf));
+  uint8_t buffer[sizeof(SYS_SERIAL_PacketTypeDef)];
+  memcpy(buffer, &packetBuf, sizeof(SYS_SERIAL_PacketTypeDef));
+  result = CDC_Transmit_FS(buffer, sizeof(packetBuf));
   __ASSERT(result == 0, SYS_ERROR);
 
   return SYS_OK;

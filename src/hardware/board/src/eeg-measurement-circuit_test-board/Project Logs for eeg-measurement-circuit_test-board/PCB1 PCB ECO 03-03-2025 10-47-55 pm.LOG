@@ -1,0 +1,16 @@
+Added Component: Designator=SB102(SolderBridgeOpen)
+Added Component: Designator=SB103(SolderBridgeOpen)
+Added Component: Designator=U400(ST-64-2_ADI)
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "Buy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://www.digikey.com/en/products/detail/analog-devices-inc/AD7768-4BSTZ-RL/6056981"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mfr_Name"; Value = "Analog Devices Inc"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RefDes"; Value = "RefDes"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Type"; Value = "Data Acquisition"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "AD7768-4BSTZ-RL"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=+2.5 Pin=SB102-1
+Added Pin To Net: NetName=NetC110_2 Pin=SB102-2
+Added Pin To Net: NetName=-2.5 Pin=SB103-1
+Added Pin To Net: NetName=NetC119_2 Pin=SB103-2
+Add Class: Class already exists: Designator
+Add Class: Class already exists: Designator
+Add Class: Class already exists: Designator
