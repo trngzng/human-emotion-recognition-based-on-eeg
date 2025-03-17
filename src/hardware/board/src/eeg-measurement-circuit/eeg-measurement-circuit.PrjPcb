@@ -136,7 +136,7 @@ DocumentUniqueId=AOHYPSCX
 
 [Document6]
 DocumentPath=Digital Processing.SchDoc
-AnnotationEnabled=0
+AnnotationEnabled=1
 AnnotateStartValue=500
 AnnotationIndexControlEnabled=1
 AnnotateSuffix=
@@ -153,7 +153,7 @@ DocumentUniqueId=ZPPOJSPQ
 
 [Document7]
 DocumentPath=Interface.SchDoc
-AnnotationEnabled=0
+AnnotationEnabled=1
 AnnotateStartValue=600
 AnnotationIndexControlEnabled=1
 AnnotateSuffix=
@@ -1677,6 +1677,7 @@ Net7=NetName=+5_USB|NetColor=clAqua
 Net8=NetName=EEG_CH1-|NetColor=clBlack
 Net9=NetName=EEG_CH1+|NetColor=clBlack
 Net10=NetName=GND|NetColor=$00134E27
+Net11=NetName=USB_GND|NetColor=$004D1220
 
 [Comparison Options]
 ComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=0|UseName=-1|InclAllRules=0
