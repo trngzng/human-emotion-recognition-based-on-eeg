@@ -3,14 +3,16 @@ Version=1.0
 [Project1]
 ProjectPath=eeg-measurement-circuit\eeg-measurement-circuit.PrjPcb
 [Project2]
-ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Amplifiers.LibPkg
+ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Diode.LibPkg
 [Project3]
-ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Resistor.LibPkg
+ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Amplifiers.LibPkg
 [Project4]
-ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Power-IC.LibPkg
+ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Resistor.LibPkg
 [Project5]
-ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_MCU.LibPkg
+ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Power-IC.LibPkg
 [Project6]
-ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Isolators.LibPkg
+ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_MCU.LibPkg
 [Project7]
+ProjectPath=..\..\..\..\..\..\Altium Materials\Altium Library\My Libs\Giang_Isolators.LibPkg
+[Project8]
 ProjectPath=eeg-measurement-circuit_test-board\eeg-measurement-circuit_test-board.PrjPcb
