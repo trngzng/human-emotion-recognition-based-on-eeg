@@ -18,7 +18,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "usb_device.h"
-#include "sys_def.h"
+#include "common.h"
 /* Public defines ----------------------------------------------------- */
 #define PUBLIC_DEFINE_1  (0) /*!< Description of PUBLIC_DEFINE_1 */
 #define PUBLIC_DEFINE_2  (0) /*!< Description of PUBLIC_DEFINE_2 */
@@ -85,10 +85,10 @@ extern int g_var_2; /**< Description of public variable g_var_2 */
  * @attention  Must initialize the USB device libraries before use
  *
  * @return
- *  - SYS_SERIAL_READY: Success
+ *  - BS_OK: Success
  *  - else: Error
  */
-SYS_StatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_HandleTypeDef *pdev);
+BaseStatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_HandleTypeDef *pdev);
 
 /**
  * @brief  Send samples to GUI via USB
@@ -103,7 +103,7 @@ SYS_StatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_Handle
  *  - SYS_SERIAL_READY: Success
  *  - else: Error
  */
-SYS_StatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, float *psample, uint8_t num);
+BaseStatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, float *psample, uint8_t num);
 
 #endif // __SYS_SERIAL_H
 

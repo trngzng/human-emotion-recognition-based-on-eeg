@@ -22,6 +22,20 @@
 
 /* Public enumerate/structure ----------------------------------------- */
 
+typedef enum
+{
+  BS_FALSE = 0x00,
+  BS_TRUE = 0x01
+} BoolTypeDef;
+
+typedef enum
+{
+  BS_OK = 0x00,
+  BS_ERROR = 0x01,
+  BS_BUSY = 0x02,
+  BS_TIMEOUT = 0x03,
+} BaseStatusTypeDef;
+
 /* Public macros ------------------------------------------------------ */
 #ifdef DEBUG
 #define __ASSERT(_EXPR_, _RET_VAL_) \

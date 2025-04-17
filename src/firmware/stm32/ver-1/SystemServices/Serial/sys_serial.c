@@ -57,25 +57,25 @@ SYS_SERIAL_PacketTypeDef packetBuf = {PACKET_SOP,
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
-SYS_StatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_HandleTypeDef *pdev)
+BaseStatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_HandleTypeDef *pdev)
 {
-  __ASSERT(pserial != NULL, SYS_ERROR);
-  __ASSERT(pserial->status == SYS_SERIAL_RESET, SYS_OK);
-  __ASSERT(pdev != NULL, SYS_ERROR);
-  __ASSERT(pdev->pData != NULL, SYS_ERROR);
+  __ASSERT(pserial != NULL, BS_ERROR);
+  __ASSERT(pserial->status == SYS_SERIAL_RESET, BS_ERROR);
+  __ASSERT(pdev != NULL, BS_ERROR);
+  __ASSERT(pdev->pData != NULL, BS_ERROR);
 
   pserial->pDev = pdev;
   pserial->status = SYS_SERIAL_READY;
 
-  return SYS_OK;
+  return BS_OK;
 }
 
-SYS_StatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, float *psample, uint8_t num)
+BaseStatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, float *psample, uint8_t num)
 {
-  __ASSERT(pserial != NULL, SYS_ERROR);
-  __ASSERT(pserial->status == SYS_SERIAL_READY, SYS_TIMEOUT);
-  __ASSERT(psample != NULL, SYS_ERROR);
-  __ASSERT((num > 0) && (num <= 8), SYS_ERROR);
+  __ASSERT(pserial != NULL, BS_ERROR);
+  __ASSERT(pserial->status == SYS_SERIAL_READY, BS_ERROR);
+  __ASSERT(psample != NULL, BS_ERROR);
+  __ASSERT((num > 0) && (num <= 8), BS_ERROR);
 
   uint8_t result;
   packetBuf.crc = 0;
@@ -94,9 +94,9 @@ SYS_StatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, floa
   uint8_t buffer[sizeof(SYS_SERIAL_PacketTypeDef)];
   memcpy(buffer, &packetBuf, sizeof(SYS_SERIAL_PacketTypeDef));
   result = CDC_Transmit_FS(buffer, sizeof(packetBuf));
-  __ASSERT(result == 0, SYS_ERROR);
+  __ASSERT(result == 0, BS_ERROR);
 
-  return SYS_OK;
+  return BS_OK;
 }
 /* Private definitions ----------------------------------------------- */
 
