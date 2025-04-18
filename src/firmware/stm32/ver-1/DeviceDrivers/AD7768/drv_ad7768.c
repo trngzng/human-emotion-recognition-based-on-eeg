@@ -108,7 +108,8 @@ static BaseStatusTypeDef AD7768_HelloWorld(DRV_AD7768_HandleTypeDef *dev);
 BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
                                   SPI_HandleTypeDef *spi,
                                   GPIO_TypeDef *cs_port,
-                                  uint16_t cs_pin)
+                                  uint16_t cs_pin,
+                                  uint8_t master_clock)
 {
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(spi != NULL, BS_ERROR);
@@ -117,6 +118,7 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   dev->hspi = spi;
   dev->cs_port = cs_port;
   dev->cs_pin = cs_pin;
+  dev->mclk = master_clock;
   dev->active = BS_TRUE;      // Set the device as active
 
   DRV_AD7768_SoftReset(dev); // Perform a software reset
@@ -295,6 +297,16 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev)
                   AD7768_DATA_CONTROL,
                   AD7768_SPI_RESET_MSK,
                   AD7768_SPI_RESET_2);
+
+  return BS_OK;
+}
+
+BaseStatusTypeDef DRV_AD7768_SetOutputDataRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+
+  
 
   return BS_OK;
 }

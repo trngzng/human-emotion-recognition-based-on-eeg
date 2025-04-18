@@ -74,6 +74,7 @@ typedef struct
   SPI_HandleTypeDef *hspi;                                    /**< SPI handle for communication with AD7768 */
   GPIO_TypeDef *cs_port;                                      /**< GPIO port for chip select pin */
   uint16_t cs_pin;                                            /**< GPIO pin for chip select pin */
+  uint8_t mclk;                                               /**< MCLK frequency in MHz */
   uint16_t output_datalines;
   uint16_t sampling_freq;                                     /**< Sampling frequency in Hz */
   DRV_AD7768_PowerModesTypeDef power_mode;                    /**< Current power mode of the device */
@@ -108,6 +109,7 @@ typedef struct
  * @param[in]     spi           Pointer to the SPI_HandleTypeDef structure
  * @param[in]     cs_port       Pointer to the GPIO port for chip select pin
  * @param[in]     cs_pin        GPIO pin for chip select pin
+ * @param[in]     master_clock  Master clock of the device
  * @param[out]    <param_name>  <param_despcription>
  * @param[inout]  <param_name>  <param_despcription>
  *
@@ -120,7 +122,8 @@ typedef struct
 BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
                                   SPI_HandleTypeDef *spi,
                                   GPIO_TypeDef *cs_port,
-                                  uint16_t cs_pin);
+                                  uint16_t cs_pin,
+                                  uint8_t master_clock);
 
 /**
  * @brief  User GPIO Enable
@@ -234,6 +237,20 @@ BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7
  *  - BS_ERROR: Error
  */
 BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev);
+
+/**
+ * @brief  Determine the output sampling rate (DCLK frequency) of the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     freq          Desired output sampling rate in Hz
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_SetOutputDataRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq);
 
 
 #endif // __DRV_AD7768_CONFIG_H

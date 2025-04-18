@@ -100,7 +100,7 @@ int main(void)
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
   SYS_Serial_Init(&uSerial, &hUsbDeviceFS);
-  DRV_AD7768_Init(&uAdc, &hspi1, ADC_NCS_GPIO_Port, ADC_NCS_Pin);
+  DRV_AD7768_Init(&uAdc, &hspi1, ADC_NCS_GPIO_Port, ADC_NCS_Pin, 32);
   /* USER CODE END 2 */
 
   /* Infinite loop */
