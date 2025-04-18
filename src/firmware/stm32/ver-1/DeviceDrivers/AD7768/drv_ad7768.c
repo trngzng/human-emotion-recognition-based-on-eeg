@@ -19,9 +19,20 @@
 
 /* Private defines ---------------------------------------------------- */
 
+#define AD7768_POWER_MODE_MSK  (0x03 << 4) /*!< Mask for POWER_MODE bits [5:4] */
+#define AD7768_MCLK_DIV_MSK    (0x03 << 0) /*!< Mask for MCLK_DIV bits [1:0] */
+
+#define AD7768_SPI_RESET_MSK	(0x03 << 0) /*!< Mask for SPI_RESET bits [1:0] */
+#define AD7768_SPI_RESET_1		0x03
+#define AD7768_SPI_RESET_2		0x02
+
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
+
+#define __AD7768_SET_POWER_MODE(x)		(((x) & 0x3) << 4)
+#define __AD7768_GET_POWER_MODE(x)		(((x) >> 4) & 0x3)
+#define __AD7768_SET_MCLK_DIV(x)		  (((x) & 0x3) << 0)
 
 /* Public variables --------------------------------------------------- */
 
@@ -107,9 +118,9 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   dev->cs_pin = cs_pin;
   dev->active = BS_TRUE;      // Set the device as active
 
-  AD7768_HelloWorld(dev);     // Test the device
-  DRV_AD7768_HardReset(dev);  // Reset the device
-  HAL_Delay(100);             // Delay for the reset to take effect
+  DRV_AD7768_SoftReset(dev); // Perform a software reset
+  DRV_AD7768_SetPowerMode(dev, MEDIAN_MODE); // Set the power mode to MEDIAN_MODE
+  AD7768_HelloWorld(dev);
 
   DRV_AD7768_CheckDeviceStatus(dev); // Check the device status                               
 
@@ -184,14 +195,14 @@ BaseStatusTypeDef DRV_AD7768_Sync(DRV_AD7768_HandleTypeDef *dev)
                   AD7768_DATA_CONTROL_SPI_SYNC_MSK,
                   AD7768_DATA_CONTROL_SPI_SYNC_CLEAR);
 
-// Small delay before sync assert
-HAL_Delay(1);
+  // Small delay before sync assert
+  HAL_Delay(1);
 
-// Step 2: Assert SPI_SYNC bit (bit = 1)
-AD7768_WriteMask(dev,
-                AD7768_DATA_CONTROL,
-                AD7768_DATA_CONTROL_SPI_SYNC_MSK,
-                AD7768_DATA_CONTROL_SPI_SYNC);
+  // Step 2: Assert SPI_SYNC bit (bit = 1)
+  AD7768_WriteMask(dev,
+                  AD7768_DATA_CONTROL,
+                  AD7768_DATA_CONTROL_SPI_SYNC_MSK,
+                  AD7768_DATA_CONTROL_SPI_SYNC);
 
 return BS_OK;
 }
@@ -226,6 +237,57 @@ BaseStatusTypeDef DRV_AD7768_CheckDeviceStatus(DRV_AD7768_HandleTypeDef *dev)
   }
 
   return BS_OK; // Success: Device is responding
+}
+
+BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7768_PowerModesTypeDef mode)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+  
+  uint8_t pwr_val = 0;
+
+  dev->power_mode = mode; // Set the power mode
+  pwr_val = __AD7768_SET_POWER_MODE(dev->power_mode);
+
+  uint8_t reg_val = AD7768_ReadRegister(dev, AD7768_POWER_MODE);
+
+  AD7768_WriteMask(dev,
+                  AD7768_POWER_MODE,
+                  AD7768_POWER_MODE_MSK,
+                  pwr_val); // Set the power mode in the register
+  
+  DRV_AD7768_Sync(dev); // Issue a sync pulse to apply the changes
+  // Double check the power mode
+  reg_val = AD7768_ReadRegister(dev, AD7768_POWER_MODE);
+  if (__AD7768_GET_POWER_MODE(reg_val) != dev->power_mode) {
+    printf("AD7768: Set power mode failed!\n");
+    return BS_ERROR; // Error: Set power mode failed
+  }
+
+  return BS_OK;
+}
+
+BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+
+  // 
+  AD7768_WriteMask(dev,
+                  AD7768_DATA_CONTROL,
+                  AD7768_SPI_RESET_MSK,
+                  AD7768_SPI_RESET_1);
+
+  // Small delay before reset deassertion
+  HAL_Delay(1);
+
+  // 
+  AD7768_WriteMask(dev,
+                  AD7768_DATA_CONTROL,
+                  AD7768_SPI_RESET_MSK,
+                  AD7768_SPI_RESET_2);
+
+  return BS_OK;
 }
 
 /* Private definitions ------------------------------------------------ */
@@ -272,11 +334,6 @@ static BaseStatusTypeDef AD7768_HelloWorld(DRV_AD7768_HandleTypeDef *dev)
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
-  uint8_t reg_val = AD7768_ReadRegister(dev, AD7768_CH_MODE);
-  if (reg_val == 0xFF) {
-    return 1; // Error: Device not responding
-  }
-
   // Turn on the user GPIO for testing the initialization
   DRV_AD7768_GPIO_Enable(dev);
   for (uint8_t i = 0; i < 5; i++) {
@@ -306,7 +363,7 @@ static BaseStatusTypeDef AD7768_WriteMask(DRV_AD7768_HandleTypeDef *dev,
   // Write bits specified by mask
   reg_val &= ~mask;
   // Apply new masked bits
-  reg_val |= (value & mask);
+  reg_val |= value;
   // Write back modified value
   AD7768_WriteRegister(dev, reg_addr, reg_val);
 

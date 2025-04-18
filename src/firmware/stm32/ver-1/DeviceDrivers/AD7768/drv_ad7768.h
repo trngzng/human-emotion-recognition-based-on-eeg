@@ -43,10 +43,9 @@ typedef enum
 
 typedef enum 
 {
-  LOW_POWER_MODE,
-  MEDIAN_MODE,
-  FAST_MODE,
-  NUM_OF_POWER_MODES,
+  LOW_POWER_MODE = 0x00,
+  MEDIAN_MODE = 0x2,
+  FAST_MODE = 0x3,
 } DRV_AD7768_PowerModesTypeDef;
 
 typedef struct {
@@ -207,6 +206,34 @@ BaseStatusTypeDef DRV_AD7768_Sync(DRV_AD7768_HandleTypeDef *dev);
  *  - BS_ERROR: Error
  */
 BaseStatusTypeDef DRV_AD7768_CheckDeviceStatus(DRV_AD7768_HandleTypeDef *dev);
+
+/**
+ * @brief  Check the current status of the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     mode          Power mode to set
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7768_PowerModesTypeDef mode);
+
+/**
+ * @brief  Software reset the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev);
+
 
 #endif // __DRV_AD7768_CONFIG_H
 
