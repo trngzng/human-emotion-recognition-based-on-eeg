@@ -33,6 +33,7 @@
 #define __AD7768_SET_POWER_MODE(x)		(((x) & 0x3) << 4)
 #define __AD7768_GET_POWER_MODE(x)		(((x) >> 4) & 0x3)
 #define __AD7768_SET_MCLK_DIV(x)		  (((x) & 0x3) << 0)
+#define __AD7768_GET_MCLK_DIV(x)		  ((x) & 0x3)
 
 /* Public variables --------------------------------------------------- */
 
@@ -245,22 +246,29 @@ BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
   
   uint8_t pwr_val = 0;
+  uint8_t mclk_div_val = 0;
 
   dev->power_mode = mode; // Set the power mode
   pwr_val = __AD7768_SET_POWER_MODE(dev->power_mode);
-
-  uint8_t reg_val = AD7768_ReadRegister(dev, AD7768_POWER_MODE);
 
   AD7768_WriteMask(dev,
                   AD7768_POWER_MODE,
                   AD7768_POWER_MODE_MSK,
                   pwr_val); // Set the power mode in the register
+
+  mclk_div_val = __AD7768_SET_MCLK_DIV(dev->power_mode);
+
+  AD7768_WriteMask(dev,
+                  AD7768_POWER_MODE,
+                  AD7768_MCLK_DIV_MSK,
+                  mclk_div_val); // Set the MCLK divider correspond to the power mode
   
   DRV_AD7768_Sync(dev); // Issue a sync pulse to apply the changes
+
   // Double check the power mode
-  reg_val = AD7768_ReadRegister(dev, AD7768_POWER_MODE);
-  if (__AD7768_GET_POWER_MODE(reg_val) != dev->power_mode) {
-    printf("AD7768: Set power mode failed!\n");
+  uint8_t reg_val = AD7768_ReadRegister(dev, AD7768_POWER_MODE);
+  if ((__AD7768_GET_POWER_MODE(reg_val) != mode) || (__AD7768_GET_MCLK_DIV(reg_val) != mclk_div_val)) {
+    printf("AD7768: Set power mode and MCLK divider failed!\n");
     return BS_ERROR; // Error: Set power mode failed
   }
 
