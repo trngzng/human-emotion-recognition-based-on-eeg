@@ -267,7 +267,8 @@ BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7
 
   // Double check the power mode
   uint8_t reg_val = AD7768_ReadRegister(dev, AD7768_POWER_MODE);
-  if ((__AD7768_GET_POWER_MODE(reg_val) != mode) || (__AD7768_GET_MCLK_DIV(reg_val) != mclk_div_val)) {
+  if ((__AD7768_GET_POWER_MODE(reg_val) != mode) || (__AD7768_GET_MCLK_DIV(reg_val) != mclk_div_val)) 
+  {
     printf("AD7768: Set power mode and MCLK divider failed!\n");
     return BS_ERROR; // Error: Set power mode failed
   }

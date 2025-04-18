@@ -31,7 +31,8 @@
 #define AD7768_STATUS_RAM_BIST_PASS       (1 << 1)
 #define AD7768_STATUS_RAM_BIST_RUNNING    (1)
 
-#define AD7768_MAX_FREQ_PER_MODE  (6)
+#define AD7768_NUM_OF_FREQ_PER_POWER_MODE (6)
+#define AD7768_NUM_OF_POWER_MODES         (3)
 
 /* Public enumerate/structure ----------------------------------------- */
 
@@ -55,7 +56,7 @@ typedef struct {
 
 typedef struct {
   uint32_t num_of_freqs;
-  DRV_AD7768_FreqConfigTypeDef freq_config[AD7768_MAX_FREQ_PER_MODE];
+  DRV_AD7768_FreqConfigTypeDef freq_config[AD7768_NUM_OF_FREQ_PER_POWER_MODE];
 } DRV_AD7768_AvailFreqTypeDef;
 
 typedef enum
@@ -76,7 +77,7 @@ typedef struct
   uint16_t output_datalines;
   uint16_t sampling_freq;                                     /**< Sampling frequency in Hz */
   DRV_AD7768_PowerModesTypeDef power_mode;                    /**< Current power mode of the device */
-  DRV_AD7768_AvailFreqTypeDef avail_freq[AD7768_MAX_FREQ_PER_MODE]; /**< Frequency configuration for each decimation rate */
+  DRV_AD7768_AvailFreqTypeDef avail_freq[AD7768_NUM_OF_POWER_MODES]; /**< Frequency configuration for each power mode */
   BoolTypeDef active;                             /**< Flag to indicate if the device is initialized */
   uint8_t device_status;
 } DRV_AD7768_HandleTypeDef;
