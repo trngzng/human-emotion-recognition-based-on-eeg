@@ -128,6 +128,7 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   __ASSERT(spi != NULL, BS_ERROR);
   __ASSERT(cs_port != NULL, BS_ERROR);
 
+  dev->device_type = AD7768_4_DEVICE;
   dev->hspi = spi;
   dev->cs_port = cs_port;
   dev->cs_pin = cs_pin;
@@ -229,6 +230,7 @@ BaseStatusTypeDef DRV_AD7768_CheckDeviceStatus(DRV_AD7768_HandleTypeDef *dev)
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
   dev->device_status = AD7768_ReadRegister(dev, AD7768_DEVICE_STATUS);
+  printf("AD7768 status register: 0x%x\n", dev->device_status);
   if ((dev->device_status & AD7768_STATUS_CHIP_ERR) == AD7768_STATUS_CHIP_ERR) 
   {
     printf("AD7768: Chip error detected!\n");
@@ -277,8 +279,6 @@ BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7
                   AD7768_POWER_MODE,
                   AD7768_MCLK_DIV_MSK,
                   mclk_div_val); // Set the MCLK divider correspond to the power mode
-  
-  AD7768_CalculateAvailFreq(dev); // Calculate the available frequencies after change the power mode
 
   DRV_AD7768_Sync(dev); // Issue a sync pulse to apply the changes
 
@@ -289,6 +289,8 @@ BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7
     printf("AD7768: Set power mode and MCLK divider failed!\n");
     return BS_ERROR; // Error: Set power mode failed
   }
+
+  AD7768_CalculateAvailFreq(dev); // Calculate the available frequencies after change the power mode
 
   return BS_OK;
 }
