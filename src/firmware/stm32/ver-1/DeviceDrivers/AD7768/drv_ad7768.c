@@ -38,9 +38,9 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
-static const uint16_t ad7768_dec_rate[6] = {32, 64, 128, 256, 512, 1024};
+static const uint16_t ad7768_dec_rate[AD7768_NUM_OF_FREQ_PER_POWER_MODE] = {32, 64, 128, 256, 512, 1024};
 
-static const uint8_t ad7768_mclk_div[3] = {32, 8, 4};
+static const uint8_t ad7768_mclk_div[AD7768_NUM_OF_POWER_MODES] = {32, 8, 4};
 
 /* Private function prototypes ---------------------------------------- */
 /**
@@ -104,6 +104,19 @@ static uint8_t AD7768_ReadRegister(DRV_AD7768_HandleTypeDef *dev,
  *  - BS_ERROR: Error
  */
 static BaseStatusTypeDef AD7768_HelloWorld(DRV_AD7768_HandleTypeDef *dev);
+
+/**
+ * @brief  Calculate the available frequency correspond to the power mode.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ *
+ * @attention  Must be called after setting the power mode.
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+static BaseStatusTypeDef AD7768_CalculateAvailFreq(DRV_AD7768_HandleTypeDef *dev);
 /* Function definitions ----------------------------------------------- */
 BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
                                   SPI_HandleTypeDef *spi,
@@ -265,6 +278,8 @@ BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7
                   AD7768_MCLK_DIV_MSK,
                   mclk_div_val); // Set the MCLK divider correspond to the power mode
   
+  AD7768_CalculateAvailFreq(dev); // Calculate the available frequencies after change the power mode
+
   DRV_AD7768_Sync(dev); // Issue a sync pulse to apply the changes
 
   // Double check the power mode
@@ -307,6 +322,7 @@ BaseStatusTypeDef DRV_AD7768_SetOutputDataRate(DRV_AD7768_HandleTypeDef *dev, ui
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
   
+
 
   return BS_OK;
 }
@@ -387,6 +403,24 @@ static BaseStatusTypeDef AD7768_WriteMask(DRV_AD7768_HandleTypeDef *dev,
   reg_val |= value;
   // Write back modified value
   AD7768_WriteRegister(dev, reg_addr, reg_val);
+
+  return BS_OK;
+}
+
+static BaseStatusTypeDef AD7768_CalculateAvailFreq(DRV_AD7768_HandleTypeDef *dev)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+
+  uint8_t pwr_mode_idx = (dev->power_mode) ? (dev->power_mode - 1): 0; // Get the index of the power mode
+  uint32_t freq = dev->mclk * 1000000 / ad7768_mclk_div[pwr_mode_idx]; // Calculate the modulator frequency based on the power mode
+  // Calculate the available frequency based on the power mode
+  for (uint8_t i = 0; i < AD7768_NUM_OF_FREQ_PER_POWER_MODE; i++)
+  {
+    dev->avail_freq[pwr_mode_idx].freq_config[i].freq = freq / ad7768_dec_rate[i];
+    dev->avail_freq[pwr_mode_idx].freq_config[i].dec_rate = ad7768_dec_rate[i];
+  }
+  dev->avail_freq[pwr_mode_idx].num_of_freqs = AD7768_NUM_OF_FREQ_PER_POWER_MODE; // Set the number of available frequencies
 
   return BS_OK;
 }
