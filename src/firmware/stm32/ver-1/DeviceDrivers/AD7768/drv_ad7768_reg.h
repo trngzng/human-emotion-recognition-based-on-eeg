@@ -64,8 +64,6 @@
 #define AD7768_INTERFACE_CFG_CRC_SELECT_MSK     (0x3 << 2)
 #define AD7768_INTERFACE_CFG_CRC_SELECT         (0x01 << 2)
 
-#define AD7768_MAX_DCLK_DIV                   8
-
 // Write flag for SPI
 #define AD7768_WR_FLAG_MSK(x)     (0x80 | ((x) & 0x7F))
 

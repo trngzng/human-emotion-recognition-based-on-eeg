@@ -103,6 +103,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
   SYS_Serial_Init(&uSerial, &hUsbDeviceFS);
   DRV_AD7768_Init(&uAdc, &hspi1, ADC_NCS_GPIO_Port, ADC_NCS_Pin, 32, AD7768_4_DEVICE, 1);
+  DRV_AD7768_SetPowerMode(&uAdc, LOW_POWER_MODE);
+  DRV_AD7768_SetSamplingRate(&uAdc, 1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */

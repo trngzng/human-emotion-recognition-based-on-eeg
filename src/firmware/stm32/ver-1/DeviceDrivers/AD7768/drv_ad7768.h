@@ -36,6 +36,8 @@
 
 #define AD7768_SAMPLE_SIZE                (32) // Sample size in bits
 
+#define AD7768_MAX_DCLK_DIV			          (8)
+
 /* Public enumerate/structure ----------------------------------------- */
 
 typedef enum
@@ -254,7 +256,7 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev);
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */
-BaseStatusTypeDef DRV_AD7768_SetOutputDataRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq);
+BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq);
 
 
 #endif // __DRV_AD7768_CONFIG_H

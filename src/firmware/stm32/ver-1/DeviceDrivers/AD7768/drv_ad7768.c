@@ -29,6 +29,9 @@
 #define AD7768_4_NUM_OF_CHANNLES  (4) /*!< Number of channels in AD7768-4 */
 #define AD7768_NUM_OF_CHANNLES    (8) /*!< Number of channels in AD7768 */
 
+#define AD7768_DEC_RATE_MSK		(0x07 << 0) /*!< Mask for DEC_RATE bits [2:0] */
+
+
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -37,6 +40,15 @@
 #define __AD7768_GET_POWER_MODE(x)		(((x) >> 4) & 0x3)
 #define __AD7768_SET_MCLK_DIV(x)		  (((x) & 0x3) << 0)
 #define __AD7768_GET_MCLK_DIV(x)		  ((x) & 0x3)
+
+#define __AD7768_DCLK_DIV_MODE(x) \
+                  ((x) == 1 ? 3 : \
+                  (x) == 2 ? 2 : \
+                  (x) == 4 ? 1 : \
+                  (x) == 8 ? 0 : 3)
+
+#define AD7768_DEC_RATE_MODE(x)		(((x) & 0x7) << 0)
+
 
 /* Public variables --------------------------------------------------- */
 
@@ -142,7 +154,6 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   dev->active = BS_TRUE;      // Set the device as active
 
   DRV_AD7768_SoftReset(dev); // Perform a software reset
-  DRV_AD7768_SetPowerMode(dev, MEDIAN_MODE); // Set the power mode to MEDIAN_MODE
   AD7768_HelloWorld(dev);
 
   DRV_AD7768_CheckDeviceStatus(dev); // Check the device status                               
@@ -324,17 +335,89 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev)
   return BS_OK;
 }
 
-BaseStatusTypeDef DRV_AD7768_SetOutputDataRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq)
+BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq)
 {
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
-  uint8_t channel_per_dout;
+  uint32_t best_diff, mclk_hz, dclk, dclk_div;
+  uint8_t num_of_channels, channel_per_dout;
+  uint8_t power_mode_idx = (dev->power_mode) ? (dev->power_mode - 1) : 0;
+  const DRV_AD7768_AvailFreqTypeDef *freq_table = &dev->avail_freq[power_mode_idx];
+  const DRV_AD7768_FreqConfigTypeDef *selected_cfg = NULL;
 
-  channel_per_dout = dev->device_type == AD7768_4_DEVICE ? AD7768_4_NUM_OF_CHANNLES : AD7768_NUM_OF_CHANNLES; // Get the number of channels per data output line
+  // Handle boundary conditions (freq < min or freq > max)
+  if (freq >= freq_table->freq_config[0].freq)
+    selected_cfg = &freq_table->freq_config[0];
+  else if (freq <= freq_table->freq_config[freq_table->num_of_freqs - 1].freq)
+    selected_cfg = &freq_table->freq_config[freq_table->num_of_freqs - 1];
+  else
+  {
+    // Find the closest available frequency
+    best_diff = 0xFFFFFFFF;
+    for (uint8_t i = 0; i < freq_table->num_of_freqs; i++)
+    {
+      uint32_t diff = (freq > freq_table->freq_config[i].freq) ?
+                      (freq - freq_table->freq_config[i].freq) :
+                      (freq_table->freq_config[i].freq - freq);
 
+      if (diff < best_diff)
+      {
+        best_diff = diff;
+        selected_cfg = &freq_table->freq_config[i];
+      }
+    }
+  }
 
-  return BS_OK;
+  if (selected_cfg == NULL)
+    return BS_ERROR;
+
+  // Calculate dclk = ODR × SAMPLE_SIZE × channels per DOUTx
+  num_of_channels = (dev->device_type == AD7768_4_DEVICE) ?
+                            AD7768_4_NUM_OF_CHANNLES : AD7768_NUM_OF_CHANNLES;
+  channel_per_dout = num_of_channels / dev->output_datalines;
+  mclk_hz = dev->mclk * 1000000;
+  dclk = selected_cfg->freq * AD7768_SAMPLE_SIZE * channel_per_dout;
+
+  if (dclk > mclk_hz)
+    return BS_ERROR;  // MCLK too low for requested ODR
+
+  // Calculate dclk_div
+  dclk_div = (mclk_hz + dclk / 2) / dclk;  // Round to nearest
+  if (dclk_div > AD7768_MAX_DCLK_DIV)
+    dclk_div = AD7768_MAX_DCLK_DIV;
+  else if ((dclk_div & (dclk_div - 1)) != 0)  // not power of 2
+  {
+    // Round down to nearest power of 2
+    for (uint8_t i = 1; i < 3; i++)
+    {
+      if ((0x1 << i) > dclk_div)
+      {
+        dclk_div = 0x1 << (i - 1);
+        break;
+      }
+    }
+  }
+
+  // Write DCLK_DIV to INTERFACE_CFG register
+  if (AD7768_WriteMask(dev,
+                       AD7768_INTERFACE_CFG,
+                       AD7768_INTERFACE_CFG_DCLK_DIV_MSK,
+                       __AD7768_DCLK_DIV_MODE(dclk_div)) != BS_OK)
+    return BS_ERROR;
+
+  // Write DEC_RATE to CH_MODE register
+  if (AD7768_WriteMask(dev,
+                       AD7768_CH_MODE,
+                       AD7768_DEC_RATE_MSK,
+                       AD7768_DEC_RATE_MODE(selected_cfg->dec_rate)) != BS_OK)
+    return BS_ERROR;
+
+  // Update internal sampling freq
+  dev->sampling_freq = selected_cfg->freq;
+
+  // Apply configuration
+  return DRV_AD7768_Sync(dev);
 }
 
 /* Private definitions ------------------------------------------------ */
@@ -428,7 +511,7 @@ static BaseStatusTypeDef AD7768_CalculateAvailFreq(DRV_AD7768_HandleTypeDef *dev
   for (uint8_t i = 0; i < AD7768_NUM_OF_FREQ_PER_POWER_MODE; i++)
   {
     dev->avail_freq[pwr_mode_idx].freq_config[i].freq = freq / ad7768_dec_rate[i];
-    dev->avail_freq[pwr_mode_idx].freq_config[i].dec_rate = ad7768_dec_rate[i];
+    dev->avail_freq[pwr_mode_idx].freq_config[i].dec_rate = i;
   }
   dev->avail_freq[pwr_mode_idx].num_of_freqs = AD7768_NUM_OF_FREQ_PER_POWER_MODE; // Set the number of available frequencies
 
