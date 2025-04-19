@@ -258,6 +258,33 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev);
  */
 BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq);
 
+/**
+ * @brief  Enable the channel(s) of the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     channel       Channel number to enable (0-7 for AD7768, 0-3 for AD7768-4)
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_EnableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_t channel);
+
+/**
+ * @brief  Disable the channel(s) of the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     channel       Channel number to disable (0-7 for AD7768, 0-3 for AD7768-4)
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_t channel);
 
 #endif // __DRV_AD7768_CONFIG_H
 

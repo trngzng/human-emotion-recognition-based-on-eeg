@@ -47,8 +47,9 @@
                   (x) == 4 ? 1 : \
                   (x) == 8 ? 0 : 3)
 
-#define AD7768_DEC_RATE_MODE(x)		(((x) & 0x7) << 0)
+#define __AD7768_DEC_RATE_MODE(x)		(((x) & 0x7) << 0)
 
+#define __AD7768_STANDBY_BIT(ch)    (0x1 << (ch))
 
 /* Public variables --------------------------------------------------- */
 
@@ -410,7 +411,7 @@ BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint
   if (AD7768_WriteMask(dev,
                        AD7768_CH_MODE,
                        AD7768_DEC_RATE_MSK,
-                       AD7768_DEC_RATE_MODE(selected_cfg->dec_rate)) != BS_OK)
+                       __AD7768_DEC_RATE_MODE(selected_cfg->dec_rate)) != BS_OK)
     return BS_ERROR;
 
   // Update internal sampling freq
@@ -420,6 +421,27 @@ BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint
   return DRV_AD7768_Sync(dev);
 }
 
+BaseStatusTypeDef DRV_AD7768_EnableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_t channel)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(channel < ((dev->device_type == AD7768_4_DEVICE) ? 4 : 8), BS_ERROR);
+
+  return AD7768_WriteMask(dev,
+                          AD7768_REG_STANDBY,
+                          __AD7768_STANDBY_BIT(channel),  // mask: 1 << ch
+                          0x00); // write 0 to enable the channel
+}
+
+BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_t channel)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(channel < ((dev->device_type == AD7768_4_DEVICE) ? 4 : 8), BS_ERROR);
+
+  return AD7768_WriteMask(dev,
+                          AD7768_REG_STANDBY,
+                          AD7768_STANDBY_BIT(channel),  // mask: 1 << ch
+                          AD7768_STANDBY_BIT(channel)); // write 1 to standby
+}
 /* Private definitions ------------------------------------------------ */
 static BaseStatusTypeDef AD7768_WriteRegister(DRV_AD7768_HandleTypeDef *dev,
                                               uint8_t reg_addr,
