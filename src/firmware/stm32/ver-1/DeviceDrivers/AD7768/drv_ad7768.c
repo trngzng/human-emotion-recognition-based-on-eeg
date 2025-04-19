@@ -160,7 +160,7 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
     dev->channel[i].active = BS_TRUE; // Enable all channels by default
     dev->channel[i].dec_rate = 5; // Default decimation rate
     dev->channel[i].filter_type = AD7768_SINC5_FILTER_TYPE; // Default filter type
-    dev->channel[i].mode = AD7768_CHANNEL_MODE_A;
+    dev->channel[i].mode = AD7768_CHANNEL_IN_MODE_A;
 
   }
 
@@ -456,15 +456,16 @@ BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8
                           __AD7768_STANDBY_BIT(channel)); // write 1 to standby
 }
 
-BaseStatusTypeDef DRV_AD7768_SetFilterTypeModeA(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type)
+BaseStatusTypeDef DRV_AD7768_SetFilterType(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type, uint8_t mode)
 {
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
   uint8_t filter_val = __AD7768_FILTER_TYPE_MODE(filter_type);
+  uint8_t reg_mode = (mode == AD7768_CHANNEL_IN_MODE_A) ? AD7768_CH_MODE_A : AD7768_CH_MODE_B;
 
   AD7768_WriteMask(dev,
-                  AD7768_CH_MODE_A,
+                  reg_mode,
                   AD7768__FILTER_TYPE_MSK,
                   filter_val); // Set the filter type in the register
 

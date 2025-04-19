@@ -308,6 +308,7 @@ BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8
  *
  * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
  * @param[in]     filter_type   Filter type to set (0 for wideband, 1 for sinc5)
+ * @param[in]     mode          Mode of the device (0 for mode A, 1 for mode B)
  *
  * @attention  <API attention note>
  *
@@ -315,7 +316,7 @@ BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */
-BaseStatusTypeDef DRV_AD7768_SetFilterTypeModeA(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type);
+BaseStatusTypeDef DRV_AD7768_SetFilterType(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type, uint8_t mode);
 
 #endif // __DRV_AD7768_CONFIG_H
 

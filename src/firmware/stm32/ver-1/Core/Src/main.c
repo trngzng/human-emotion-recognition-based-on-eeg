@@ -104,7 +104,8 @@ int main(void)
   SYS_Serial_Init(&uSerial, &hUsbDeviceFS);
   DRV_AD7768_Init(&uAdc, &hspi1, ADC_NCS_GPIO_Port, ADC_NCS_Pin, 32, AD7768_4_DEVICE, 1);
   DRV_AD7768_SetPowerMode(&uAdc, LOW_POWER_MODE);
-  DRV_AD7768_SetSamplingRateModeA(&uAdc, 1000, AD7768_CHANNEL_IN_MODE_A);
+  DRV_AD7768_SetSamplingRate(&uAdc, 1000, AD7768_CHANNEL_IN_MODE_A);
+  DRV_AD7768_SetFilterType(&uAdc, AD7768_WIDEBAND_FILTER_TYPE, AD7768_CHANNEL_IN_MODE_A);
   /* USER CODE END 2 */
 
   /* Infinite loop */
