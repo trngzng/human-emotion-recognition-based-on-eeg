@@ -29,7 +29,8 @@
 #define AD7768_4_NUM_OF_CHANNLES  (4) /*!< Number of channels in AD7768-4 */
 #define AD7768_NUM_OF_CHANNLES    (8) /*!< Number of channels in AD7768 */
 
-#define AD7768_DEC_RATE_MSK		(0x07 << 0) /*!< Mask for DEC_RATE bits [2:0] */
+#define AD7768__FILTER_TYPE_MSK		(0x01 << 3) /*!< Mask for FILTER_TYPE bits [3] */
+#define AD7768_DEC_RATE_MSK		    (0x07 << 0) /*!< Mask for DEC_RATE bits [2:0] */
 
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -47,9 +48,10 @@
                   (x) == 4 ? 1 : \
                   (x) == 8 ? 0 : 3)
 
-#define __AD7768_DEC_RATE_MODE(x)		(((x) & 0x7) << 0)
+#define __AD7768_FILTER_TYPE_MODE(x)	(((x) & 0x1) << 3)
+#define __AD7768_DEC_RATE_MODE(x)		  (((x) & 0x7) << 0)
 
-#define __AD7768_STANDBY_BIT(ch)    (0x1 << (ch))
+#define __AD7768_STANDBY_BIT(ch)      (0x1 << (ch))
 
 /* Public variables --------------------------------------------------- */
 
@@ -151,7 +153,17 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   dev->cs_port = cs_port;
   dev->cs_pin = cs_pin;
   dev->mclk = master_clock;
+  dev->power_mode = LOW_POWER_MODE; // Default power mode
   dev->output_datalines = datalines;
+  for (uint8_t i = 0; i < AD7768_MAX_CHANNEL; i++)
+  {
+    dev->channel[i].active = BS_TRUE; // Enable all channels by default
+    dev->channel[i].dec_rate = 5; // Default decimation rate
+    dev->channel[i].filter_type = AD7768_SINC5_FILTER_TYPE; // Default filter type
+    dev->channel[i].mode = AD7768_CHANNEL_MODE_A;
+
+  }
+
   dev->active = BS_TRUE;      // Set the device as active
 
   DRV_AD7768_SoftReset(dev); // Perform a software reset
@@ -336,13 +348,13 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev)
   return BS_OK;
 }
 
-BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq)
+BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq, uint8_t mode)
 {
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
   uint32_t best_diff, mclk_hz, dclk, dclk_div;
-  uint8_t num_of_channels, channel_per_dout;
+  uint8_t num_of_channels, channel_per_dout, reg_mode;
   uint8_t power_mode_idx = (dev->power_mode) ? (dev->power_mode - 1) : 0;
   const DRV_AD7768_AvailFreqTypeDef *freq_table = &dev->avail_freq[power_mode_idx];
   const DRV_AD7768_FreqConfigTypeDef *selected_cfg = NULL;
@@ -408,8 +420,9 @@ BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint
     return BS_ERROR;
 
   // Write DEC_RATE to CH_MODE register
+  reg_mode = (mode == AD7768_CHANNEL_IN_MODE_A) ? AD7768_CH_MODE_A : AD7768_CH_MODE_B;
   if (AD7768_WriteMask(dev,
-                       AD7768_CH_MODE,
+                       reg_mode,
                        AD7768_DEC_RATE_MSK,
                        __AD7768_DEC_RATE_MODE(selected_cfg->dec_rate)) != BS_OK)
     return BS_ERROR;
@@ -427,7 +440,7 @@ BaseStatusTypeDef DRV_AD7768_EnableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_
   __ASSERT(channel < ((dev->device_type == AD7768_4_DEVICE) ? 4 : 8), BS_ERROR);
 
   return AD7768_WriteMask(dev,
-                          AD7768_REG_STANDBY,
+                          AD7768_CH_STANDBY,
                           __AD7768_STANDBY_BIT(channel),  // mask: 1 << ch
                           0x00); // write 0 to enable the channel
 }
@@ -438,9 +451,24 @@ BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8
   __ASSERT(channel < ((dev->device_type == AD7768_4_DEVICE) ? 4 : 8), BS_ERROR);
 
   return AD7768_WriteMask(dev,
-                          AD7768_REG_STANDBY,
-                          AD7768_STANDBY_BIT(channel),  // mask: 1 << ch
-                          AD7768_STANDBY_BIT(channel)); // write 1 to standby
+                          AD7768_CH_STANDBY,
+                          __AD7768_STANDBY_BIT(channel),  // mask: 1 << ch
+                          __AD7768_STANDBY_BIT(channel)); // write 1 to standby
+}
+
+BaseStatusTypeDef DRV_AD7768_SetFilterTypeModeA(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+
+  uint8_t filter_val = __AD7768_FILTER_TYPE_MODE(filter_type);
+
+  AD7768_WriteMask(dev,
+                  AD7768_CH_MODE_A,
+                  AD7768__FILTER_TYPE_MSK,
+                  filter_val); // Set the filter type in the register
+
+  return BS_OK;
 }
 /* Private definitions ------------------------------------------------ */
 static BaseStatusTypeDef AD7768_WriteRegister(DRV_AD7768_HandleTypeDef *dev,

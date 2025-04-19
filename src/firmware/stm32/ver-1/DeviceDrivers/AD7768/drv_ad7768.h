@@ -34,9 +34,16 @@
 #define AD7768_NUM_OF_FREQ_PER_POWER_MODE (6)
 #define AD7768_NUM_OF_POWER_MODES         (3)
 
+#define AD7768_WIDEBAND_FILTER_TYPE       (0)
+#define AD7768_SINC5_FILTER_TYPE          (1)
+
+#define AD7768_CHANNEL_IN_MODE_A          (0)
+#define AD7768_CHANNEL_IN_MODE_B          (1)
+
 #define AD7768_SAMPLE_SIZE                (32) // Sample size in bits
 
 #define AD7768_MAX_DCLK_DIV			          (8)
+#define AD7768_MAX_CHANNEL                (8) // Maximum number of channels
 
 /* Public enumerate/structure ----------------------------------------- */
 
@@ -63,6 +70,14 @@ typedef struct {
   DRV_AD7768_FreqConfigTypeDef freq_config[AD7768_NUM_OF_FREQ_PER_POWER_MODE];
 } DRV_AD7768_AvailFreqTypeDef;
 
+typedef struct
+{
+  uint8_t filter_type;  /**< Filter type (Wideband or Sinc5) */
+  uint32_t dec_rate;    /**< Decimation rate */
+  uint8_t mode;
+  BoolTypeDef active;   /**< Flag to indicate if the filter is enabled */
+} DRV_AD7768_ChannelTypeDef;
+
 typedef enum
 {
   DATA_OUT_1_LINE,
@@ -79,7 +94,8 @@ typedef struct
   GPIO_TypeDef *cs_port;                                      /**< GPIO port for chip select pin */
   uint16_t cs_pin;                                            /**< GPIO pin for chip select pin */
   uint8_t mclk;                                               /**< MCLK frequency in MHz */
-  uint16_t output_datalines;
+  uint8_t output_datalines;                                   /**< Number of data output lines (1, 2, 4, or 8) */
+  DRV_AD7768_ChannelTypeDef channel[AD7768_MAX_CHANNEL];      /**< Array to store channel activity status */
   uint16_t sampling_freq;                                     /**< Sampling frequency in Hz */
   DRV_AD7768_PowerModesTypeDef power_mode;                    /**< Current power mode of the device */
   DRV_AD7768_AvailFreqTypeDef avail_freq[AD7768_NUM_OF_POWER_MODES]; /**< Frequency configuration for each power mode */
@@ -249,6 +265,7 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev);
  *
  * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
  * @param[in]     freq          Desired output sampling rate in Hz
+ * @param[in]     mode          Mode of the device (0 for mode A, 1 for mode B)
  *
  * @attention  <API attention note>
  *
@@ -256,7 +273,7 @@ BaseStatusTypeDef DRV_AD7768_SoftReset(DRV_AD7768_HandleTypeDef *dev);
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */
-BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq);
+BaseStatusTypeDef DRV_AD7768_SetSamplingRate(DRV_AD7768_HandleTypeDef *dev, uint32_t freq, uint8_t mode);
 
 /**
  * @brief  Enable the channel(s) of the AD7768 device.
@@ -285,6 +302,20 @@ BaseStatusTypeDef DRV_AD7768_EnableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_
  *  - BS_ERROR: Error
  */
 BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8_t channel);
+
+/**
+ * @brief  Set the type of the built-in filter (wideband or sinc).
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     filter_type   Filter type to set (0 for wideband, 1 for sinc5)
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_SetFilterTypeModeA(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type);
 
 #endif // __DRV_AD7768_CONFIG_H
 
