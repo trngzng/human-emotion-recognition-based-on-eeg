@@ -63,7 +63,9 @@ static void MX_SPI3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int _write(int file, char *ptr, int len) {
+    CDC_Transmit_FS((uint8_t*) ptr, len); return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -111,6 +113,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 //    SYS_Serial_SendSamples(&uSerial, (float[]){1.0f, 2.0f, 3.0f, 4.0f}, 4);
+    DRV_AD7768_CheckDeviceStatus(&uAdc);
     HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
     HAL_Delay(1000);
   }
