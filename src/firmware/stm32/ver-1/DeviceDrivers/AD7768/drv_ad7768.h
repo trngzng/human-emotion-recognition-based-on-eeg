@@ -34,6 +34,8 @@
 #define AD7768_NUM_OF_FREQ_PER_POWER_MODE (6)
 #define AD7768_NUM_OF_POWER_MODES         (3)
 
+#define AD7768_SAMPLE_SIZE                (32) // Sample size in bits
+
 /* Public enumerate/structure ----------------------------------------- */
 
 typedef enum
@@ -123,7 +125,9 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
                                   SPI_HandleTypeDef *spi,
                                   GPIO_TypeDef *cs_port,
                                   uint16_t cs_pin,
-                                  uint8_t master_clock);
+                                  uint8_t master_clock,
+                                  DRV_AD7768_DeviceTypeDef device_type,
+                                  uint8_t datalines);
 
 /**
  * @brief  User GPIO Enable

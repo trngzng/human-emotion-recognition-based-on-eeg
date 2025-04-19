@@ -26,6 +26,9 @@
 #define AD7768_SPI_RESET_1		0x03
 #define AD7768_SPI_RESET_2		0x02
 
+#define AD7768_4_NUM_OF_CHANNLES  (4) /*!< Number of channels in AD7768-4 */
+#define AD7768_NUM_OF_CHANNLES    (8) /*!< Number of channels in AD7768 */
+
 /* Private enumerate/structure ---------------------------------------- */
 
 /* Private macros ----------------------------------------------------- */
@@ -122,7 +125,9 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
                                   SPI_HandleTypeDef *spi,
                                   GPIO_TypeDef *cs_port,
                                   uint16_t cs_pin,
-                                  uint8_t master_clock)
+                                  uint8_t master_clock,
+                                  DRV_AD7768_DeviceTypeDef device_type,
+                                  uint8_t datalines)
 {
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(spi != NULL, BS_ERROR);
@@ -133,6 +138,7 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   dev->cs_port = cs_port;
   dev->cs_pin = cs_pin;
   dev->mclk = master_clock;
+  dev->output_datalines = datalines;
   dev->active = BS_TRUE;      // Set the device as active
 
   DRV_AD7768_SoftReset(dev); // Perform a software reset
@@ -323,7 +329,9 @@ BaseStatusTypeDef DRV_AD7768_SetOutputDataRate(DRV_AD7768_HandleTypeDef *dev, ui
   __ASSERT(dev != NULL, BS_ERROR);
   __ASSERT(dev->active == BS_TRUE, BS_ERROR);
 
-  
+  uint8_t channel_per_dout;
+
+  channel_per_dout = dev->device_type == AD7768_4_DEVICE ? AD7768_4_NUM_OF_CHANNLES : AD7768_NUM_OF_CHANNLES; // Get the number of channels per data output line
 
 
   return BS_OK;
