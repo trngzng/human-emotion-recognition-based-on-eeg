@@ -224,9 +224,9 @@ BaseStatusTypeDef DRV_AD7768_HardReset(DRV_AD7768_HandleTypeDef *dev)
 {
   __ASSERT(dev != NULL, BS_ERROR);
 
-  HAL_GPIO_WritePin(ADC_NDRDY_GPIO_Port, ADC_NCS_Pin, GPIO_PIN_RESET);
-  HAL_Delay(10); // Delay for the reset to take effect
-  HAL_GPIO_WritePin(ADC_NDRDY_GPIO_Port, ADC_NCS_Pin, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(ADC_NRESET_GPIO_Port, ADC_NRESET_Pin, GPIO_PIN_RESET);
+//  HAL_Delay(10); // Delay for the reset to take effect
+//  HAL_GPIO_WritePin(ADC_NRESET_GPIO_Port, ADC_NRESET_Pin, GPIO_PIN_SET);
 
   return BS_OK;
 }
@@ -285,6 +285,7 @@ BaseStatusTypeDef DRV_AD7768_CheckDeviceStatus(DRV_AD7768_HandleTypeDef *dev)
   }
 
   return BS_OK; // Success: Device is responding
+
 }
 
 BaseStatusTypeDef DRV_AD7768_SetPowerMode(DRV_AD7768_HandleTypeDef *dev, DRV_AD7768_PowerModesTypeDef mode)
@@ -468,6 +469,7 @@ BaseStatusTypeDef DRV_AD7768_SetFilterType(DRV_AD7768_HandleTypeDef *dev, uint8_
                   reg_mode,
                   AD7768__FILTER_TYPE_MSK,
                   filter_val); // Set the filter type in the register
+  DRV_AD7768_Sync(dev);
 
   return BS_OK;
 }
@@ -517,11 +519,11 @@ static BaseStatusTypeDef AD7768_HelloWorld(DRV_AD7768_HandleTypeDef *dev)
 
   // Turn on the user GPIO for testing the initialization
   DRV_AD7768_GPIO_Enable(dev);
-  for (uint8_t i = 0; i < 5; i++) {
+  for (uint8_t i = 0; i < 4; i++) {
     DRV_AD7768_GPIO_SetDirection(dev, i, AD7768_GPIO_MODE_OUTPUT); // Set GPIO pin "i" to output
   }
   
-  for (uint8_t i = 0; i < 5; i++) {
+  for (uint8_t i = 0; i < 4; i++) {
     DRV_AD7768_GPIO_WritePin(dev, i, BS_FALSE); // Set GPIO pin "i" to high
     HAL_Delay(150);
     DRV_AD7768_GPIO_WritePin(dev, i, BS_TRUE); // Set GPIO pin "i" to low

@@ -59,22 +59,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define USER_LED_Pin GPIO_PIN_13
 #define USER_LED_GPIO_Port GPIOC
-#define ADC_NRESET_Pin GPIO_PIN_1
-#define ADC_NRESET_GPIO_Port GPIOA
 #define ADC_NCS_Pin GPIO_PIN_4
 #define ADC_NCS_GPIO_Port GPIOA
-#define ADC_SCLK_Pin GPIO_PIN_5
-#define ADC_SCLK_GPIO_Port GPIOA
-#define ADC_SDO_Pin GPIO_PIN_6
-#define ADC_SDO_GPIO_Port GPIOA
-#define ADC_SDI_Pin GPIO_PIN_7
-#define ADC_SDI_GPIO_Port GPIOA
-#define ADC_NDRDY_Pin GPIO_PIN_15
-#define ADC_NDRDY_GPIO_Port GPIOA
-#define ADC_DCLK_Pin GPIO_PIN_10
-#define ADC_DCLK_GPIO_Port GPIOC
-#define ADC_DOUT0_Pin GPIO_PIN_5
-#define ADC_DOUT0_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
