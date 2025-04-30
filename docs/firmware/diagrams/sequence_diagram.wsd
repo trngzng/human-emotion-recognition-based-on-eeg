@@ -1,0 +1,91 @@
+@startuml sequence_diagram
+
+skinparam SequenceMessageAlignment center
+
+box "Hardware" #LightSalmon
+participant USB
+participant CortexM4
+participant ADC_AD7768
+end box
+
+box "HAL" #LightYellow
+participant SPI
+participant PCD
+participant DMA
+participant RCC
+participant NVIC
+participant GPIO
+end box
+
+box "Driver" #LightYellow
+participant AD7768
+end box
+
+box "BSP" #MediumPurple
+participant ExternalADC
+end box
+
+
+box "Middleware" #LightBlue
+participant USBDevice
+participant DSP
+participant CircularBuffer
+end box
+
+box "System Service" #LightSeaGreen
+participant SerialConnectionManager
+participant AcquisitionManager
+participant FilteringManager
+participant DataManager
+end box
+
+box "Application" #LightGreen
+participant EyeBlinkDetection
+participant Initialization
+end box
+
+group InitializationProcess
+Initialization -> CortexM4: Initialize System
+Initialization -> RCC: Configure Clocks
+Initialization -> NVIC: Configure Interrupts
+Initialization -> GPIO: Configure GPIO Pins
+Initialization -> SPI: Initialize SPI Interface
+Initialization -> DMA: Initialize DMA Controller
+Initialization -> PCD: Initialize USB Device
+Initialization -> AcquisitionManager: Initialize External ADC
+Initialization -> DataManager: Initialize Data Buffers
+Initialization -> FilteringManager: Initialize Coefficients of Filtering Algorithm
+Initialization -> EyeBlinkDetection: Initialize Eye Blink Detection Algorithm
+Initialization -> SerialConnectionManager: Initialize Serial Connection
+end
+
+group NormalOperation
+ADC_AD7768 -> SPI: Sample Data
+SPI -> DMA: Receive Data
+DMA -> AD7768: Forward Data
+AD7768 -> ExternalADC: Parse Data and Get ADC Values
+ExternalADC -> DataManager: Send ADC Values to Buffers
+DataManager -> CircularBuffer: Store ADC Values
+CircularBuffer -> DataManager: Get ADC Values
+DataManager -> FilteringManager: Send ADC Values for Filtering
+FilteringManager -> DSP: Apply Filtering Algorithm
+DSP -> FilteringManager: Return Filtered Data
+FilteringManager -> DataManager: Send Filtered Data to Buffers
+DataManager -> CircularBuffer: Store Filtered Data
+CircularBuffer -> DataManager: Get Filtered Data
+DataManager -> SerialConnectionManager: Send Filtered Data for Packeting
+DataManager -> SerialConnectionManager: Send Raw Data for Packeting
+SerialConnectionManager -> USBDevice: Send Packeting to USB
+USBDevice -> PCD: Forward Data to Host
+PCD -> PCD: Check Data Integrity
+PCD -> USB: Send Data to Host
+DataManager -> EyeBlinkDetection: Send Filtered Data\nfor Eye Blink Detection
+EyeBlinkDetection -> EyeBlinkDetection: Process Data\nDetect Eye Blink
+EyeBlinkDetection -> SerialConnectionManager: Send Eye Blink\nDetection Result
+SerialConnectionManager -> USBDevice: Send Eye Blink\nDetection Result to USB
+USBDevice -> PCD: Forward Eye Blink\nDetection Result to Host
+PCD -> USB: Send Eye Blink\nDetection Result to Host
+end
+
+
+@enduml
