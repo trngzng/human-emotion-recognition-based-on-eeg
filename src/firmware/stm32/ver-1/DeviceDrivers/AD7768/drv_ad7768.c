@@ -137,7 +137,8 @@ static BaseStatusTypeDef AD7768_HelloWorld(DRV_AD7768_HandleTypeDef *dev);
 static BaseStatusTypeDef AD7768_CalculateAvailFreq(DRV_AD7768_HandleTypeDef *dev);
 /* Function definitions ----------------------------------------------- */
 BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
-                                  SPI_HandleTypeDef *spi,
+                                  SPI_HandleTypeDef *config_spi,
+                                  SPI_HandleTypeDef *data_spi,
                                   GPIO_TypeDef *cs_port,
                                   uint16_t cs_pin,
                                   uint8_t master_clock,
@@ -145,11 +146,13 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
                                   uint8_t datalines)
 {
   __ASSERT(dev != NULL, BS_ERROR);
-  __ASSERT(spi != NULL, BS_ERROR);
+  __ASSERT(config_spi != NULL, BS_ERROR);
+  __ASSERT(data_spi != NULL, BS_ERROR);
   __ASSERT(cs_port != NULL, BS_ERROR);
 
   dev->device_type = AD7768_4_DEVICE;
-  dev->hspi = spi;
+  dev->config_spi = config_spi;
+  dev->data_spi = data_spi;
   dev->cs_port = cs_port;
   dev->cs_pin = cs_pin;
   dev->mclk = master_clock;
@@ -473,6 +476,20 @@ BaseStatusTypeDef DRV_AD7768_SetFilterType(DRV_AD7768_HandleTypeDef *dev, uint8_
 
   return BS_OK;
 }
+
+BaseStatusTypeDef DRV_AD7768_SetReceivedBuffer(DRV_AD7768_HandleTypeDef *dev, uint8_t *buffer, uint32_t size)
+{
+  __ASSERT(dev != NULL, BS_ERROR);
+  __ASSERT(buffer != NULL, BS_ERROR);
+  __ASSERT(size > 0, BS_ERROR);
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+
+  // Set the buffer for receiving data from the device
+  HAL_SPI_Receive_DMA(dev->data_spi, buffer, size); // Start receiving data in DMA mode
+
+  return BS_OK;
+}
+
 /* Private definitions ------------------------------------------------ */
 static BaseStatusTypeDef AD7768_WriteRegister(DRV_AD7768_HandleTypeDef *dev,
                                               uint8_t reg_addr,
@@ -488,7 +505,7 @@ static BaseStatusTypeDef AD7768_WriteRegister(DRV_AD7768_HandleTypeDef *dev,
   tx_data[1] = reg_data;
 
   HAL_GPIO_WritePin(dev->cs_port, dev->cs_pin, GPIO_PIN_RESET);
-  ret = HAL_SPI_Transmit(dev->hspi, tx_data, 2, HAL_MAX_DELAY);
+  ret = HAL_SPI_Transmit(dev->config_spi, tx_data, 2, HAL_MAX_DELAY);
   HAL_GPIO_WritePin(dev->cs_port, dev->cs_pin, GPIO_PIN_SET);
 
   __ASSERT(ret == HAL_OK, BS_ERROR);
@@ -506,7 +523,7 @@ static uint8_t AD7768_ReadRegister(DRV_AD7768_HandleTypeDef *dev,
   uint8_t rx_data[2] = {0};
 
   HAL_GPIO_WritePin(dev->cs_port, dev->cs_pin, GPIO_PIN_RESET);
-  HAL_SPI_TransmitReceive(dev->hspi, tx_data, rx_data, 2, HAL_MAX_DELAY);
+  HAL_SPI_TransmitReceive(dev->config_spi, tx_data, rx_data, 2, HAL_MAX_DELAY);
   HAL_GPIO_WritePin(dev->cs_port, dev->cs_pin, GPIO_PIN_SET);
 
   return rx_data[1]; // Return the data read from the register

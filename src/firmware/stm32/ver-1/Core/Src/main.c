@@ -24,7 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
 #include "sys_serial.h"
-#include "drv_ad7768.h"
+#include "bsp_ext_adc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,9 +50,9 @@ DMA_HandleTypeDef hdma_spi3_rx;
 /* USER CODE BEGIN PV */
 extern USBD_HandleTypeDef hUsbDeviceFS;
 SYS_SERIAL_HandleTypeDef uSerial;
-DRV_AD7768_HandleTypeDef uAdc;
 
-uint8_t samples[16] = {0};
+
+extern uint8_t samples[16];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -72,14 +72,14 @@ int _write(int file, char *ptr, int len)
     CDC_Transmit_FS((uint8_t*) ptr, len); return len;
 }
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-  if (hspi->Instance == hspi3.Instance)
-  {
-    for (uint_fast8_t i = 0; i < 16; i++)
-      printf("Sample[%d] = %d\n", i, samples[i]);
-  }
-}
+//void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+//{
+//  if (hspi->Instance == hspi3.Instance)
+//  {
+//    for (uint_fast8_t i = 0; i < 16; i++)
+//      printf("Sample[%d] = %d\n", i, samples[i]);
+//  }
+//}
 /* USER CODE END 0 */
 
 /**
@@ -117,13 +117,8 @@ int main(void)
   MX_USB_Device_Init();
   /* USER CODE BEGIN 2 */
   SYS_Serial_Init(&uSerial, &hUsbDeviceFS);
-  DRV_AD7768_Init(&uAdc, &hspi1, ADC_NCS_GPIO_Port, ADC_NCS_Pin, 32, AD7768_4_DEVICE, 1);
-  DRV_AD7768_SetPowerMode(&uAdc, LOW_POWER_MODE);
-  DRV_AD7768_SetSamplingRate(&uAdc, 1000, AD7768_CHANNEL_IN_MODE_A);
-
-  DRV_AD7768_SetFilterType(&uAdc, AD7768_WIDEBAND_FILTER_TYPE, AD7768_CHANNEL_IN_MODE_A);
-
-  HAL_SPI_Receive_DMA(&hspi3, samples, 16);
+  BSP_EXT_ADC_Init();
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -134,7 +129,6 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 //    SYS_Serial_SendSamples(&uSerial, (float[]){1.0f, 2.0f, 3.0f, 4.0f}, 4);
-    DRV_AD7768_CheckDeviceStatus(&uAdc);
     HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
     HAL_Delay(1000);
   }
@@ -152,17 +146,18 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI48|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
-  RCC_OscInitStruct.PLL.PLLN = 24;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;
+  RCC_OscInitStruct.PLL.PLLN = 85;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV4;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -180,14 +175,10 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }
-
-  /** Enables the Clock Security System
-  */
-  HAL_RCC_EnableCSS();
 }
 
 /**
@@ -213,7 +204,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -300,6 +291,7 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -315,6 +307,26 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(USER_LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC14 PC15 PC6 PC11 */
+  GPIO_InitStruct.Pin = GPIO_PIN_14|GPIO_PIN_15|GPIO_PIN_6|GPIO_PIN_11;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PG10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA0 PA8 PA9 PA10
+                           PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10
+                          |GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA1 PA2 PA3 */
   GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
@@ -341,6 +353,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : PB11 PB12 PB13 PB14
+                           PB15 PB3 PB4 PB6
+                           PB7 PB8 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14
+                          |GPIO_PIN_15|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_6
+                          |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /* USER CODE BEGIN MX_GPIO_Init_2 */
   /* USER CODE END MX_GPIO_Init_2 */
 }
@@ -348,28 +370,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
-
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM17 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM17)
-  {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
-}
 
 /**
   * @brief  This function is executed in case of error occurrence.

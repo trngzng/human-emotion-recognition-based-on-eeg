@@ -90,7 +90,8 @@ typedef enum
 typedef struct
 {
   DRV_AD7768_DeviceTypeDef device_type;                       /**< Device type (AD7768 or AD7768-4) */
-  SPI_HandleTypeDef *hspi;                                    /**< SPI handle for communication with AD7768 */
+  SPI_HandleTypeDef *config_spi;                              /**< SPI handle for communication with AD7768 */
+  SPI_HandleTypeDef *data_spi;                                /**< SPI handle for received data */
   GPIO_TypeDef *cs_port;                                      /**< GPIO port for chip select pin */
   uint16_t cs_pin;                                            /**< GPIO pin for chip select pin */
   uint8_t mclk;                                               /**< MCLK frequency in MHz */
@@ -126,7 +127,8 @@ typedef struct
  * @brief  Initialize the AD7768 device.
  *
  * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
- * @param[in]     spi           Pointer to the SPI_HandleTypeDef structure
+ * @param[in]     config_spi    Pointer to the SPI_HandleTypeDef structure that configures the device
+ * @param[in]     data_spi      Pointer to the SPI_HandleTypeDef structure that receives data
  * @param[in]     cs_port       Pointer to the GPIO port for chip select pin
  * @param[in]     cs_pin        GPIO pin for chip select pin
  * @param[in]     master_clock  Master clock of the device
@@ -140,7 +142,8 @@ typedef struct
  *  - DRV_ERROR: Error
  */
 BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
-                                  SPI_HandleTypeDef *spi,
+                                  SPI_HandleTypeDef *config_spi,
+                                  SPI_HandleTypeDef *data_spi,
                                   GPIO_TypeDef *cs_port,
                                   uint16_t cs_pin,
                                   uint8_t master_clock,
@@ -317,6 +320,21 @@ BaseStatusTypeDef DRV_AD7768_DisableChannel(DRV_AD7768_HandleTypeDef *dev, uint8
  *  - BS_ERROR: Error
  */
 BaseStatusTypeDef DRV_AD7768_SetFilterType(DRV_AD7768_HandleTypeDef *dev, uint8_t filter_type, uint8_t mode);
+
+/**
+ * @brief  Set the type of the built-in filter (wideband or sinc).
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     buffer        Pointer to the buffer to store received data
+ * @param[in]     size          Size of the buffer in bytes
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_SetReceivedBuffer(DRV_AD7768_HandleTypeDef *dev, uint8_t *buffer, uint32_t size);
 
 #endif // __DRV_AD7768_CONFIG_H
 
