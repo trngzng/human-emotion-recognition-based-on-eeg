@@ -52,7 +52,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 SYS_SERIAL_HandleTypeDef uSerial;
 
 
-extern uint8_t samples[16];
+extern uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -118,7 +118,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   SYS_Serial_Init(&uSerial, &hUsbDeviceFS);
   BSP_EXT_ADC_Init();
-  
+  BSP_EXT_ADC_StartReceivingSamples();
   /* USER CODE END 2 */
 
   /* Infinite loop */

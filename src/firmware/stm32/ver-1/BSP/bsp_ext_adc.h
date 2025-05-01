@@ -19,8 +19,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "drv_ad7768.h"
 /* Public defines ----------------------------------------------------- */
-#define PUBLIC_DEFINE_1  (0) /*!< Description of PUBLIC_DEFINE_1 */
-#define PUBLIC_DEFINE_2  (0) /*!< Description of PUBLIC_DEFINE_2 */
+#define RECEIVED_FRAME_LENGTH (32 * 4 / 8)  /**< AD7768-4 has 4 channel with data frame: 8-bit header and 24-bit ADC conversion  data */
 
 /* Public enumerate/structure ----------------------------------------- */
 
@@ -55,6 +54,19 @@ BaseStatusTypeDef BSP_EXT_ADC_Init(void);
  *  - BS_ERROR: Error
  */
 BaseStatusTypeDef BSP_EXT_ADC_StartReceivingSamples(void);
+
+/**
+ * @brief  Stop receiving the samples from the external ADC module.
+ *
+ * @param[in]     <param_name>  <param_despcription>
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef BSP_EXT_ADC_StopReceivingSamples(void);
 
 #endif // __BSP_EXT_ADC_H
 

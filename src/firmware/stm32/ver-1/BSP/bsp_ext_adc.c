@@ -32,7 +32,7 @@ extern SPI_HandleTypeDef hspi3;
 
 /* Private variables -------------------------------------------------- */
 static DRV_AD7768_HandleTypeDef uExtADC; /**< The external ADC stucture */
-static uint8_t uRxbuffer[16] = {0}; /**< The buffer to store the samples from the ADC */
+static uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH] = {0}; /**< The buffer to store the samples from the ADC */
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -54,6 +54,25 @@ BaseStatusTypeDef BSP_EXT_ADC_Init(void)
 
   return BS_OK;
 }
+
+BaseStatusTypeDef BSP_EXT_ADC_StartReceivingSamples(void)
+{
+  __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
+
+  HAL_SPI_Receive_DMA(uExtADC.data_spi, uRxBuffer, sizeof(uRxBuffer));
+
+  return BS_OK;
+}
+
+BaseStatusTypeDef BSP_EXT_ADC_StopReceivingSamples(void)
+{
+  __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
+
+  HAL_SPI_DMAStop(uExtADC.data_spi);
+  
+  return BS_OK;
+}
+
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
