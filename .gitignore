@@ -12,3 +12,5 @@ src/software/src/machine-learning/dataset/
 **/Project Logs for */
 **/Project Outputs for */
 **/Debug/
+**/.vscode/
+**/**.rar
