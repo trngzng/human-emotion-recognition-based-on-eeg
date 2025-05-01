@@ -40,7 +40,7 @@ static uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH] = {0}; /**< The buffer to store 
 BaseStatusTypeDef BSP_EXT_ADC_Init(void)
 {
   BaseStatusTypeDef ret = BS_ERROR;
-  ret = DRV_AD7768_Init(&uExtADC, &hspi1,&hspi3, ADC_NCS_GPIO_Port, ADC_NCS_Pin, 32, AD7768_4_DEVICE, 1);
+  ret = DRV_AD7768_Init(&uExtADC, &hspi1,&hspi3, ADC_NCS_GPIO_Port, ADC_NCS_Pin, EXTERNAL_ADC_MODULE_MASTER_CLOCK_MHZ, AD7768_4_DEVICE, 1);
   __ASSERT(ret == BS_OK, ret);
 
   ret = DRV_AD7768_SetPowerMode(&uExtADC, LOW_POWER_MODE);

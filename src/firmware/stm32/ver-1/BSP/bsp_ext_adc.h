@@ -19,8 +19,8 @@
 /* Includes ----------------------------------------------------------- */
 #include "drv_ad7768.h"
 /* Public defines ----------------------------------------------------- */
-#define RECEIVED_FRAME_LENGTH (32 * 4 / 8)  /**< AD7768-4 has 4 channel with data frame: 8-bit header and 24-bit ADC conversion  data */
-
+#define RECEIVED_FRAME_LENGTH                 (32 * 4 / 8)  /**< AD7768-4 has 4 channel with data frame: 8-bit header and 24-bit ADC conversion  data */
+#define EXTERNAL_ADC_MODULE_MASTER_CLOCK_MHZ  (32) /**< The external ADC module master clock in Hz */
 /* Public enumerate/structure ----------------------------------------- */
 
 /* Public macros ------------------------------------------------------ */
