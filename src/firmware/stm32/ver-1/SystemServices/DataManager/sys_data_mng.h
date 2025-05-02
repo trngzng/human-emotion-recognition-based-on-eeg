@@ -87,7 +87,7 @@ BaseStatusTypeDef SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_IDTopicTypeDef id, uint3
 BaseStatusTypeDef SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_IDTopicTypeDef id, SYS_DATA_MNG_CbFunc cb_func);
 
 /**
- * @brief  Subscribe to a topic
+ * @brief  Publish a message to a topic
  *
  * @param[in]     id          The ID of the topic to be created
  * @param[in]     msg         The message to be published

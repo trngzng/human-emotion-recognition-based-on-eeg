@@ -138,6 +138,33 @@ BaseStatusTypeDef SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_IDTopicTypeDef id, SY
   return BS_OK;
 }
 
+BaseStatusTypeDef SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_IDTopicTypeDef id, uint8_t *msg, uint32_t size)
+{
+  __ASSERT(id < SYS_DATA_MNG_MAX_TOPIC, BS_ERROR);
+  __ASSERT(sTopicList[id].cbuf.active == BS_TRUE, BS_ERROR);
+  __ASSERT(id < sNumOfTopics, BS_ERROR);
+  __ASSERT(msg != NULL, BS_ERROR);
+  __ASSERT(size <= sTopicList[id].message_size, BS_ERROR);
+  __ASSERT(sTopicList[id].num_of_subscribers > 0, BS_ERROR);
+  __ASSERT(CB_SpaceCount(&sTopicList[id].cbuf) >= size, BS_ERROR);
+  __ASSERT(CB_SpaceCount(&sTopicList[id].cbuf) >= sTopicList[id].message_size, BS_ERROR);
+  uint32_t ret;
+
+  ret = CB_WriteData(&sTopicList[id].cbuf, msg, size);
+  __ASSERT(ret == size, BS_ERROR);
+  if (size < sTopicList[id].message_size)
+  {
+    for (uint_fast8_t i = 0; i <  sTopicList[id].message_size - size; i++)
+    {
+      uint8_t padding = 0;
+      ret = CB_WriteData(&sTopicList[id].cbuf, &padding, sizeof(padding));
+      __ASSERT(ret == sizeof(padding), BS_ERROR);
+    }
+  }
+
+  return BS_OK;
+}
+
 /* Private definitions ------------------------------------------------ */
 static void private_function(void)
 {
