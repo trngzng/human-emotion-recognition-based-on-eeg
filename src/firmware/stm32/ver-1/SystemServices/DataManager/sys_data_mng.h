@@ -72,6 +72,35 @@ void SYS_DATA_MNG_Init(void);
  */
 BaseStatusTypeDef SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_IDTopicTypeDef id, uint32_t msg_size, uint32_t num_of_msg);
 
+/**
+ * @brief  Subscribe to a topic
+ *
+ * @param[in]     id          The ID of the topic to be created
+ * @param[in]     cb_func     The callback function to be called when a message is published
+ *
+ * @attention  <API attention note>
+ *
+ * @return
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_IDTopicTypeDef id, SYS_DATA_MNG_CbFunc cb_func);
+
+/**
+ * @brief  Subscribe to a topic
+ *
+ * @param[in]     id          The ID of the topic to be created
+ * @param[in]     msg         The message to be published
+ * @param[in]     size        The size of the message in bytes
+ *
+ * @attention  <API attention note>
+ *
+ * @return
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_IDTopicTypeDef id, uint8_t *msg, uint32_t size);
+
 #endif // __SYS_DATA_MNG_H
 
 /* End of file -------------------------------------------------------- */

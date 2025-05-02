@@ -41,6 +41,7 @@ typedef struct
   CB_HandleTypeDef cbuf;
   uint32_t num_of_subscribers;        /**< Description of member_2 */
   uint32_t message_size;
+  SYS_DATA_MNG_CbFunc cb_func[SYS_DATA_MNG_MAX_SUBSCRIBERS]; /**< Description of member_3 */
 } SYS_DATA_MNG_TopicTypeDef;
 
 /* Private macros ----------------------------------------------------- */
@@ -115,6 +116,24 @@ BaseStatusTypeDef SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_IDTopicTypeDef id, uint3
 
   sMsgBrokerTopPtr += (msg_size * num_of_msg);
   sNumOfTopics++;
+
+  return BS_OK;
+}
+
+BaseStatusTypeDef SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_IDTopicTypeDef id, SYS_DATA_MNG_CbFunc cb_func)
+{
+  __ASSERT(id < SYS_DATA_MNG_MAX_TOPIC, BS_ERROR);
+  __ASSERT(sTopicList[id].cbuf.active == BS_TRUE, BS_ERROR);
+  __ASSERT(id < sNumOfTopics, BS_ERROR);
+  __ASSERT(cb_func != NULL, BS_ERROR);
+  __ASSERT(sTopicList[id].num_of_subscribers < SYS_DATA_MNG_MAX_SUBSCRIBERS, BS_ERROR);
+  for (uint_fast8_t i = 0; i < SYS_DATA_MNG_MAX_SUBSCRIBERS; i++)
+  {
+    __ASSERT(sTopicList[id].cb_func[i] != cb_func, BS_ERROR);
+  }
+  
+  sTopicList[id].cb_func[sTopicList[id].num_of_subscribers] = cb_func;
+  sTopicList[id].num_of_subscribers++;
 
   return BS_OK;
 }
