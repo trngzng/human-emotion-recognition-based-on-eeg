@@ -41,6 +41,7 @@ typedef enum
 /* Public variables --------------------------------------------------- */
 
 /* Public function prototypes ----------------------------------------- */
+
 /**
  * @brief  Initialize the system data manager
  *
@@ -51,6 +52,21 @@ typedef enum
  * @attention  <API attention note>
  *
  * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+void SYS_DATA_MNG_Init(void);
+
+/**
+ * @brief  Create new topic
+ *
+ * @param[in]     id          The ID of the topic to be created
+ * @param[in]     msg_size    The size of the message in bytes
+ * @param[in]     num_of_msg  The number of messages of this topic
+ *
+ * @attention  <API attention note>
+ *
+ * @return
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */

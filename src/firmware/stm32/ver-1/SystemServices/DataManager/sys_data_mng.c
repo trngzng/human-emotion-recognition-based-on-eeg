@@ -64,7 +64,7 @@ int g_var_1;
 int g_var_2;
 
 /* Private variables -------------------------------------------------- */
-static SYS_DATA_MNG_TopicTypeDef topics[SYS_DATA_MNG_MAX_TOPIC];    /**< The system data manager topics */
+static SYS_DATA_MNG_TopicTypeDef sTopicList[SYS_DATA_MNG_MAX_TOPIC];    /**< The system data manager topics */
 
 static uint8_t sMsgBroker[SYS_DATA_MNG_BUFF_SIZE];                  /**< The message buffer for the topics */
 static uint32_t sMsgBrokerTopPtr = 0;                               /**< The pointer to the top of the message buffer */
@@ -87,28 +87,31 @@ static SYS_DATA_MNG_IDTopicTypeDef sNumOfTopics = 0;                /**< Current
  */
 static void private_function(void);
 /* Function definitions ----------------------------------------------- */
+
+void SYS_DATA_MNG_Init(void)
+{
+  memset(&sTopicList, 0, sizeof(sTopicList));
+  memset(sCbufReadBuffer, 0, sizeof(sCbufReadBuffer));
+}
+
 BaseStatusTypeDef SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_IDTopicTypeDef id, uint32_t msg_size, uint32_t num_of_msg)
 {
   BaseStatusTypeDef ret = BS_ERROR;
-  uint32_t i = 0;
 
   __ASSERT(id < SYS_DATA_MNG_MAX_TOPIC, BS_ERROR);
   __ASSERT(sNumOfTopics < SYS_DATA_MNG_MAX_TOPIC, BS_ERROR);
 
-  for (uint_fast8_t i = 0; i < SYS_DATA_MNG_MAX_TOPIC; i++)
-    __ASSERT(topics[i].id != id, BS_ERROR);
-
-  __ASSERT(topics[id].cbuf.active == BS_FALSE, BS_ERROR);
+  __ASSERT(sTopicList[id].cbuf.active == BS_FALSE, BS_ERROR);
   __ASSERT(msg_size > 0, BS_ERROR);
   __ASSERT(num_of_msg > 0, BS_ERROR);
   __ASSERT((msg_size * num_of_msg) <= (SYS_DATA_MNG_BUFF_SIZE - sMsgBrokerTopPtr), BS_ERROR);
 
-  ret = CB_Init(&topics[id].cbuf, sMsgBroker, msg_size * num_of_msg);
+  ret = CB_Init(&sTopicList[id].cbuf, sMsgBroker, msg_size * num_of_msg);
   __ASSERT(ret == CB_SUCCESS, BS_ERROR);
 
-  topics[id].num_of_subscribers = 0;
-  topics[id].message_size = msg_size;
-  topics[id].id = id;
+  sTopicList[id].num_of_subscribers = 0;
+  sTopicList[id].message_size = msg_size;
+  sTopicList[id].id = id;
 
   sMsgBrokerTopPtr += (msg_size * num_of_msg);
   sNumOfTopics++;
