@@ -39,7 +39,7 @@
  *  - (0) : Success
  *  - (-1): Error
  */
-static uint32_t cb_write_byte(cbuffer_t *cb, uint8_t byte);
+static uint32_t CB_WriteByteData(CB_HandleTypeDef *cb, uint8_t byte);
 
 /**
  * @brief           Read 1 byte from circular buffer
@@ -51,10 +51,10 @@ static uint32_t cb_write_byte(cbuffer_t *cb, uint8_t byte);
  *  - (0) : Success
  *  - (-1): Error
  */
-static uint32_t cb_read_byte(cbuffer_t *cb, uint8_t *byte);
+static uint32_t CB_ReadByteData(CB_HandleTypeDef *cb, uint8_t *byte);
 
 /* Function definitions ----------------------------------------------- */
-uint32_t cb_init(cbuffer_t *cb, void *buf, uint32_t size)
+uint32_t CB_Init(CB_HandleTypeDef *cb, void *buf, uint32_t size)
 {
 	if (cb == NULL)
 		return CB_ERROR;
@@ -73,7 +73,7 @@ uint32_t cb_init(cbuffer_t *cb, void *buf, uint32_t size)
 	return CB_SUCCESS;
 }
 
-uint32_t cb_clear(cbuffer_t *cb)
+uint32_t CB_Clear(CB_HandleTypeDef *cb)
 {
 	if (cb == NULL)
 		return CB_ERROR;
@@ -85,7 +85,7 @@ uint32_t cb_clear(cbuffer_t *cb)
 	return CB_SUCCESS;
 }
 
-uint32_t cb_read(cbuffer_t *cb, void *buf, uint32_t nbytes)
+uint32_t CB_ReadData(CB_HandleTypeDef *cb, void *buf, uint32_t nbytes)
 {
 	int data_count = 0;
 	int num_avail_bytes = 0;
@@ -99,7 +99,7 @@ uint32_t cb_read(cbuffer_t *cb, void *buf, uint32_t nbytes)
 		return CB_ERROR;
 	cb->active = 0;
 
-	data_count = cb_data_count(cb);
+	data_count = CB_DataCount(cb);
 	if (data_count >= nbytes)
 		num_avail_bytes = nbytes;
 	else
@@ -107,14 +107,14 @@ uint32_t cb_read(cbuffer_t *cb, void *buf, uint32_t nbytes)
 
 	for (int i = 0; i < num_avail_bytes; i++)
 	{
-		cb_read_byte(cb, (uint8_t *)buf + i);
+		CB_ReadByteData(cb, (uint8_t *)buf + i);
 	}
 
 	cb->active = 1;
 	return num_avail_bytes;
 }
 
-uint32_t cb_write(cbuffer_t *cb, void *buf, uint32_t nbytes)
+uint32_t CB_WriteData(CB_HandleTypeDef *cb, void *buf, uint32_t nbytes)
 {
 	int space_count = 0;
 	int num_avail_bytes = 0;
@@ -128,7 +128,7 @@ uint32_t cb_write(cbuffer_t *cb, void *buf, uint32_t nbytes)
 		return CB_ERROR;
 	cb->active = 0;
 
-	space_count = cb_space_count(cb);
+	space_count = CB_SpaceCount(cb);
 	if (space_count >= nbytes)
 	{
 		num_avail_bytes = nbytes;
@@ -142,14 +142,14 @@ uint32_t cb_write(cbuffer_t *cb, void *buf, uint32_t nbytes)
 
 	for (int i = 0; i < num_avail_bytes; i++)
 	{
-		cb_write_byte(cb, *((uint8_t *)buf + i));
+		CB_WriteByteData(cb, *((uint8_t *)buf + i));
 	}
 
 	cb->active = 1;
 	return num_avail_bytes;
 }
 
-uint32_t cb_data_count(cbuffer_t *cb)
+uint32_t CB_DataCount(CB_HandleTypeDef *cb)
 {
 	int res = 0;
 
@@ -164,7 +164,7 @@ uint32_t cb_data_count(cbuffer_t *cb)
 	return res;
 }
 
-uint32_t cb_space_count(cbuffer_t *cb)
+uint32_t CB_SpaceCount(CB_HandleTypeDef *cb)
 {
 	int res = 0;
 
@@ -182,7 +182,7 @@ uint32_t cb_space_count(cbuffer_t *cb)
 }
 
 /* Private definitions ----------------------------------------------- */
-static uint32_t cb_write_byte(cbuffer_t *cb, uint8_t byte)
+static uint32_t CB_WriteByteData(CB_HandleTypeDef *cb, uint8_t byte)
 {
 	uint32_t next = cb->writer + 1;
 
@@ -197,7 +197,7 @@ static uint32_t cb_write_byte(cbuffer_t *cb, uint8_t byte)
 	return CB_SUCCESS;
 }
 
-static uint32_t cb_read_byte(cbuffer_t *cb, uint8_t *byte)
+static uint32_t CB_ReadByteData(CB_HandleTypeDef *cb, uint8_t *byte)
 {
 	uint32_t next = cb->reader + 1;
 

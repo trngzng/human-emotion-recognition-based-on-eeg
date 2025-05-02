@@ -49,9 +49,9 @@
 #include <string.h>
 
 /* Public defines ----------------------------------------------------- */
-#define CB_MAX_SIZE (0x00800000) /* Max size of circular buffer */
-#define CB_ERROR    (0xFFFFFFFF)    /* Error return vale */
-#define CB_SUCCESS  (0x00000000)  /* Success return vale */
+#define CB_MAX_SIZE (0x00800000)    /* Max size of circular buffer */
+#define CB_ERROR    (0xFFFFFFFF)    /* Error return value */
+#define CB_SUCCESS  (0x00000000)    /* Success return value */
 
 /* Public enumerate/structure ----------------------------------------- */
 /**
@@ -65,7 +65,7 @@ typedef struct
     volatile uint32_t reader;   /* Position to read */
     volatile uint32_t overflow; /* How many byte are overflow */
     volatile bool active;       /* Initialized or not */
-} cbuffer_t;
+} CB_HandleTypeDef;
 
 /* Public macros ------------------------------------------------------ */
 /* Public variables --------------------------------------------------- */
@@ -83,7 +83,7 @@ typedef struct
  *  - (0) : Success
  *  - (-1): Error
  */
-uint32_t cb_init(cbuffer_t *cb, void *buf, uint32_t size);
+uint32_t CB_Init(CB_HandleTypeDef *cb, void *buf, uint32_t size);
 
 /**
  * @brief           Clear circular buffer
@@ -94,7 +94,7 @@ uint32_t cb_init(cbuffer_t *cb, void *buf, uint32_t size);
  *  - (0) : Success
  *  - (-1): Error
  */
-uint32_t cb_clear(cbuffer_t *cb);
+uint32_t CB_DeInit(CB_HandleTypeDef *cb);
 
 /**
  * @brief           Read data from circular buffer
@@ -107,7 +107,7 @@ uint32_t cb_clear(cbuffer_t *cb);
  *  - Number of successfully read byte: Success
  *  - (-1): Error
  */
-uint32_t cb_read(cbuffer_t *cb, void *buf, uint32_t nbytes);
+uint32_t CB_ReadData(CB_HandleTypeDef *cb, void *buf, uint32_t nbytes);
 
 /**
  * @brief           Write data to circular buffer
@@ -119,7 +119,7 @@ uint32_t cb_read(cbuffer_t *cb, void *buf, uint32_t nbytes);
  * @return
  *  - Number of successfully read byte
  */
-uint32_t cb_write(cbuffer_t *cb, void *buf, uint32_t nbytes);
+uint32_t CB_WriteData(CB_HandleTypeDef *cb, void *buf, uint32_t nbytes);
 
 /**
  * @brief           Return a number of byte in circular buffer
@@ -130,7 +130,7 @@ uint32_t cb_write(cbuffer_t *cb, void *buf, uint32_t nbytes);
  *  - Number of byte in circular buffer: Success
  *  - (-1): Error
  */
-uint32_t cb_data_count(cbuffer_t *cb);
+uint32_t CB_DataCount(CB_HandleTypeDef *cb);
 
 /**
  * @brief           Return a number of space (in byte unit) in circular buffer
@@ -141,7 +141,7 @@ uint32_t cb_data_count(cbuffer_t *cb);
  *  - Number of space (in byte unit) in circular buffer: Success
  *  - (-1): Error
  */
-uint32_t cb_space_count(cbuffer_t *cb);
+uint32_t CB_SpaceCount(CB_HandleTypeDef *cb);
 
 #endif // __CBUFFER_H
 
