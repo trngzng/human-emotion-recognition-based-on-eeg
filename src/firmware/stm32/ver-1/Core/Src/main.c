@@ -128,7 +128,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//    SYS_Serial_SendSamples(&uSerial, (float[]){1.0f, 2.0f, 3.0f, 4.0f}, 4);
     HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
     HAL_Delay(1000);
   }

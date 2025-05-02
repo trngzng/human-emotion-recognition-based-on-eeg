@@ -45,11 +45,17 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.641118486" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Core/Inc"/>
-									<listOptionValue builtIn="false" value="../BSP"/>
+									<listOptionValue builtIn="false" value="../BSP/extADC"/>
+									<listOptionValue builtIn="false" value="../BSP/FMAC"/>
+									<listOptionValue builtIn="false" value="../BSP/GPIO"/>
+									<listOptionValue builtIn="false" value="../BSP/Utils"/>
 									<listOptionValue builtIn="false" value="../DeviceDrivers"/>
 									<listOptionValue builtIn="false" value="../DeviceDrivers/AD7768"/>
 									<listOptionValue builtIn="false" value="../Middlewares"/>
-									<listOptionValue builtIn="false" value="../SystemServices/Serial"/>
+									<listOptionValue builtIn="false" value="../SystemServices/SerialConnectionManager"/>
+									<listOptionValue builtIn="false" value="../SystemServices/AcquisitionManager"/>
+									<listOptionValue builtIn="false" value="../SystemServices/FilteringManager"/>
+									<listOptionValue builtIn="false" value="../SystemServices/DataManager"/>
 									<listOptionValue builtIn="false" value="../SystemServices"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32G4xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy"/>
