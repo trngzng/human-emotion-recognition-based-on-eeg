@@ -43,7 +43,7 @@
 BaseStatusTypeDef BSP_EXT_ADC_Init(void);
 
 /**
- * @brief  Start receiving the samples from the external ADC module.
+ * @brief  Start receiving the ADC conversion data from the external ADC module.
  *
  * @param[in]     <param_name>  <param_despcription>
  *
@@ -53,10 +53,10 @@ BaseStatusTypeDef BSP_EXT_ADC_Init(void);
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */
-BaseStatusTypeDef BSP_EXT_ADC_StartReceivingSamples(void);
+BaseStatusTypeDef BSP_EXT_ADC_StartReceivingADCConversionData(void);
 
 /**
- * @brief  Stop receiving the samples from the external ADC module.
+ * @brief  Stop receiving the ADC conversion data from the external ADC module.
  *
  * @param[in]     <param_name>  <param_despcription>
  *
@@ -66,7 +66,7 @@ BaseStatusTypeDef BSP_EXT_ADC_StartReceivingSamples(void);
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */
-BaseStatusTypeDef BSP_EXT_ADC_StopReceivingSamples(void);
+BaseStatusTypeDef BSP_EXT_ADC_StopReceivingADCConversionData(void);
 
 #endif // __BSP_EXT_ADC_H
 

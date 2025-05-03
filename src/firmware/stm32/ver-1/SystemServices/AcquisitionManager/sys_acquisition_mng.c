@@ -35,8 +35,8 @@ BaseStatusTypeDef SYS_ACQ_MNG_Init(void)
 
   ret = BSP_EXT_ADC_Init();
   __ASSERT(ret == BS_OK, BS_ERROR); // Check if the ADC initialization was successful
-  ret = BSP_EXT_ADC_StartReceivingSamples();
-  __ASSERT(ret == BS_OK, BS_ERROR); // Check if the ADC started receiving samples successfully
+  ret = BSP_EXT_ADC_StartReceivingADCConversionData();
+  __ASSERT(ret == BS_OK, BS_ERROR); // Check if the ADC started receiving ADC conversion data successfully
 
   return BS_OK;   
 }

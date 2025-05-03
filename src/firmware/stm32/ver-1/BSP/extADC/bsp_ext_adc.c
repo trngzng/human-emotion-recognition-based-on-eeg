@@ -55,7 +55,7 @@ BaseStatusTypeDef BSP_EXT_ADC_Init(void)
   return BS_OK;
 }
 
-BaseStatusTypeDef BSP_EXT_ADC_StartReceivingSamples(void)
+BaseStatusTypeDef BSP_EXT_ADC_StartReceivingADCConversionData(void)
 {
   __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
 
@@ -64,7 +64,7 @@ BaseStatusTypeDef BSP_EXT_ADC_StartReceivingSamples(void)
   return BS_OK;
 }
 
-BaseStatusTypeDef BSP_EXT_ADC_StopReceivingSamples(void)
+BaseStatusTypeDef BSP_EXT_ADC_StopReceivingADCConversionData(void)
 {
   __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
 
