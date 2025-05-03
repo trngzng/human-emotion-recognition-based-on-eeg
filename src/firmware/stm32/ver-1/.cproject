@@ -54,6 +54,7 @@
 									<listOptionValue builtIn="false" value="../DeviceDrivers/AD7768"/>
 									<listOptionValue builtIn="false" value="../Middlewares"/>
 									<listOptionValue builtIn="false" value="../SystemServices/SerialConnectionManager"/>
+									<listOptionValue builtIn="false" value="../SystemServices/ServiceManager"/>
 									<listOptionValue builtIn="false" value="../SystemServices/AcquisitionManager"/>
 									<listOptionValue builtIn="false" value="../SystemServices/FilteringManager"/>
 									<listOptionValue builtIn="false" value="../SystemServices/DataManager"/>
