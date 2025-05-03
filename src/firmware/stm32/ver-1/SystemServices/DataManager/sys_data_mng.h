@@ -101,6 +101,17 @@ BaseStatusTypeDef SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_IDTopicTypeDef id, SY
  */
 BaseStatusTypeDef SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_IDTopicTypeDef id, uint8_t *msg, uint32_t size);
 
+
+/**
+ * @brief  Loop to check for new messages and call the callback function
+ *
+ * @attention  <API attention note>
+ *
+ * @return
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef SYS_DATA_MNG_FireEvent();
 #endif // __SYS_DATA_MNG_H
 
 /* End of file -------------------------------------------------------- */
