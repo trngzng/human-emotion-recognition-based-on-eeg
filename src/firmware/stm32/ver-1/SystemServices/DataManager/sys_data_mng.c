@@ -19,15 +19,6 @@
 #define SYS_DATA_MNG_BUFF_SIZE  (255) /*!< Description of PRIVATE_DEFINE_1 */
 
 /* Private enumerate/structure ---------------------------------------- */
-/**
- * @brief <enum descriptiton>
- */
-typedef enum 
-{
-  PRIVATE_ENUM_1, /**< Description of PRIVATE_ENUM_1 */
-  PRIVATE_ENUM_2, /**< Description of PRIVATE_ENUM_2 */
-  PRIVATE_ENUM_3  /**< Description of PRIVATE_ENUM_3 */
-} private_enum_type_t;
 
 /**
  * @brief <structure descriptiton>
@@ -42,24 +33,8 @@ typedef struct
 } SYS_DATA_MNG_TopicTypeDef;
 
 /* Private macros ----------------------------------------------------- */
-/**
- * @brief  <macro description>
- *
- * @param[in]     <param_name>  <param_despcription>
- * @param[out]    <param_name>  <param_despcription>
- * @param[inout]  <param_name>  <param_despcription>
- *
- * @attention  <API attention note>
- *
- * @return  
- *  - 0: Success
- *  - 1: Error
- */
-#define PRIVATE_MACRO(a)  do_something_with(a)
 
 /* Public variables --------------------------------------------------- */
-int g_var_1;
-int g_var_2;
 
 /* Private variables -------------------------------------------------- */
 static SYS_DATA_MNG_TopicTypeDef sTopicList[SYS_DATA_MNG_MAX_TOPIC];    /**< The system data manager topics */
@@ -70,20 +45,6 @@ static uint8_t sCbufReadBuffer[SYS_DATA_MNG_BUFF_SIZE];             /**< Buffer 
 static SYS_DATA_MNG_IDTopicTypeDef sNumOfTopics = 0;                /**< Current number of topics in the system data */
 
 /* Private function prototypes ---------------------------------------- */
-/**
- * @brief  <function description>
- *
- * @param[in]     <param_name>  <param_despcription>
- * @param[out]    <param_name>  <param_despcription>
- * @param[inout]  <param_name>  <param_despcription>
- *
- * @attention  <API attention note>
- *
- * @return  
- *  - 0: Success
- *  - 1: Error
- */
-static void private_function(void);
 /* Function definitions ----------------------------------------------- */
 
 void SYS_DATA_MNG_Init(void)
@@ -187,7 +148,5 @@ BaseStatusTypeDef SYS_DATA_MNG_FireEvent()
   return BS_OK;
 }
 /* Private definitions ------------------------------------------------ */
-static void private_function(void)
-{
-}
+
 /* End of file -------------------------------------------------------- */
