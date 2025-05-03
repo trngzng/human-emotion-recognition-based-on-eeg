@@ -94,6 +94,9 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
     uRxData[i].data[2] = uRxBuffer[i * 4 + 3];
   }
 
+  return BS_OK;
+}
+
 /* Private definitions ------------------------------------------------ */
 
 /* End of file -------------------------------------------------------- */
