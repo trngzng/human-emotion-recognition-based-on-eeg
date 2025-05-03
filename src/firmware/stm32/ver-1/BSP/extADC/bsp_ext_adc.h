@@ -68,6 +68,19 @@ BaseStatusTypeDef BSP_EXT_ADC_StartReceivingADCConversionData(void);
  */
 BaseStatusTypeDef BSP_EXT_ADC_StopReceivingADCConversionData(void);
 
+/**
+ * @brief  Stop receiving the ADC conversion data from the external ADC module.
+ *
+ * @param[in]     <param_name>  <param_despcription>
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void);
+
 #endif // __BSP_EXT_ADC_H
 
 /* End of file -------------------------------------------------------- */

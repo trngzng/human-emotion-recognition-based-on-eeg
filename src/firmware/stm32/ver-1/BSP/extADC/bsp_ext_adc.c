@@ -19,10 +19,16 @@
 /* Includes ----------------------------------------------------------- */
 #include "bsp_ext_adc.h"
 #include "main.h"
+#include <string.h>
 
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
+
+typedef struct __attribute__((packed)) {
+  uint8_t header;
+  uint8_t data[3];
+} BSP_EXT_ADC_ConversionOutputFormatTypeDef;
 
 /* Private macros ----------------------------------------------------- */
 
@@ -33,6 +39,8 @@ extern SPI_HandleTypeDef hspi3;
 /* Private variables -------------------------------------------------- */
 static DRV_AD7768_HandleTypeDef uExtADC; /**< The external ADC stucture */
 static uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH] = {0}; /**< The buffer to store the samples from the ADC */
+
+static BSP_EXT_ADC_ConversionOutputFormatTypeDef uRxData[4] = {0}; /**< The buffer to store the samples from the ADC */
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -72,6 +80,19 @@ BaseStatusTypeDef BSP_EXT_ADC_StopReceivingADCConversionData(void)
   
   return BS_OK;
 }
+
+BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
+{
+  __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
+
+
+  for (int i = 0; i < 4; ++i)
+  {
+    uRxData[i].header = uRxBuffer[i * 4];
+    uRxData[i].data[0] = uRxBuffer[i * 4 + 1];
+    uRxData[i].data[1] = uRxBuffer[i * 4 + 2];
+    uRxData[i].data[2] = uRxBuffer[i * 4 + 3];
+  }
 
 /* Private definitions ------------------------------------------------ */
 
