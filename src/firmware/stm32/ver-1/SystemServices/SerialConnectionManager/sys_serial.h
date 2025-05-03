@@ -44,43 +44,13 @@ typedef enum
   SYS_SERIAL_CMD_DEVICE_MODE   = 0x00U,   /**< Select mode for device */
 } SYS_SERIAL_CommandTypeDef;
 
-/**
- * @brief <structure descriptiton>
- */
-typedef struct 
-{
-  USBD_HandleTypeDef *pDev;
-  uint8_t *pTxPacket;
-  uint8_t *pRxPacket;
-  SYS_SERIAL_StateTypeDef status;
-} SYS_SERIAL_HandleTypeDef;
-
 /* Public macros ------------------------------------------------------ */
-/**
- * @brief  <macro description>
- *
- * @param[in]     <param_name>  <param_despcription>
- * @param[out]    <param_name>  <param_despcription>
- * @param[inout]  <param_name>  <param_despcription>
- *
- * @attention  <API attention note>
- *
- * @return  
- *  - 0: Success
- *  - 1: Error
- */
-#define PUBLIC_MACRO(a)  do_something_with(a)
 
 /* Public variables --------------------------------------------------- */
-extern int g_var_1; /**< Description of public variable g_var_1 */
-extern int g_var_2; /**< Description of public variable g_var_2 */
 
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief  Initialize the system serial service
- *
- * @param[in]     pserial       System serial instance
- * @param[in]     pdev          USB device handler
  *
  * @attention  Must initialize the USB device libraries before use
  *
@@ -88,12 +58,11 @@ extern int g_var_2; /**< Description of public variable g_var_2 */
  *  - BS_OK: Success
  *  - else: Error
  */
-BaseStatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_HandleTypeDef *pdev);
+BaseStatusTypeDef SYS_Serial_Init();
 
 /**
  * @brief  Send samples to GUI via USB
  *
- * @param[in]     pserial       System serial instance
  * @param[in]     psample       Pointer to samples' array
  * @param[in]     num           Length of data
  *
@@ -103,7 +72,7 @@ BaseStatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_Handle
  *  - SYS_SERIAL_READY: Success
  *  - else: Error
  */
-BaseStatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, float *psample, uint8_t num);
+BaseStatusTypeDef SYS_Serial_SendSamples(float *psample, uint8_t num);
 
 #endif // __SYS_SERIAL_H
 

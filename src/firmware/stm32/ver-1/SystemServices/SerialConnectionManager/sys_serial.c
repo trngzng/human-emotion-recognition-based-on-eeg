@@ -22,6 +22,19 @@
 #define PACKET_EOP  (0x55U)
 
 /* Private enumerate/structure ---------------------------------------- */
+
+/**
+ * @brief <structure descriptiton>
+ */
+typedef struct 
+{
+  USBD_HandleTypeDef *pDev;
+  uint8_t *pTxPacket;
+  uint8_t *pRxPacket;
+  SYS_SERIAL_StateTypeDef status;
+} SYS_SERIAL_HandleTypeDef;
+
+
 /**
  * Packet format:
  * .----------------.---------.-------------------.------------------.--------.----------------.
@@ -45,8 +58,11 @@ typedef struct __attribute__((packed))
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
+extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* Private variables -------------------------------------------------- */
+static SYS_SERIAL_HandleTypeDef sSerial; /**< System serial instance */
+
 SYS_SERIAL_PacketTypeDef packetBuf = {PACKET_SOP,
                                       SYS_SERIAL_CMD_DEVICE_MODE,
                                       0,
@@ -57,23 +73,21 @@ SYS_SERIAL_PacketTypeDef packetBuf = {PACKET_SOP,
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
-BaseStatusTypeDef SYS_Serial_Init(SYS_SERIAL_HandleTypeDef *pserial, USBD_HandleTypeDef *pdev)
+BaseStatusTypeDef SYS_Serial_Init()
 {
-  __ASSERT(pserial != NULL, BS_ERROR);
-  __ASSERT(pserial->status == SYS_SERIAL_RESET, BS_ERROR);
-  __ASSERT(pdev != NULL, BS_ERROR);
-  __ASSERT(pdev->pData != NULL, BS_ERROR);
+  __ASSERT(sSerial.status == SYS_SERIAL_RESET, BS_ERROR);
+  __ASSERT(&hUsbDeviceFS != NULL, BS_ERROR);
+  __ASSERT(hUsbDeviceFS.pData != NULL, BS_ERROR);
 
-  pserial->pDev = pdev;
-  pserial->status = SYS_SERIAL_READY;
+  sSerial.pDev = &hUsbDeviceFS;
+  sSerial.status = SYS_SERIAL_READY;
 
   return BS_OK;
 }
 
-BaseStatusTypeDef SYS_Serial_SendSamples(SYS_SERIAL_HandleTypeDef *pserial, float *psample, uint8_t num)
+BaseStatusTypeDef SYS_Serial_SendSamples(float *psample, uint8_t num)
 {
-  __ASSERT(pserial != NULL, BS_ERROR);
-  __ASSERT(pserial->status == SYS_SERIAL_READY, BS_ERROR);
+  __ASSERT(sSerial.status == SYS_SERIAL_RESET, BS_ERROR);
   __ASSERT(psample != NULL, BS_ERROR);
   __ASSERT((num > 0) && (num <= 8), BS_ERROR);
 
