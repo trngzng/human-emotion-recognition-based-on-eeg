@@ -17,6 +17,7 @@
 #define __SYS_MNG_H
 
 /* Includes ----------------------------------------------------------- */
+#include "sys_serial.h"
 #include "sys_data_mng.h"
 #include "sys_acquisition_mng.h"
 /* Public defines ----------------------------------------------------- */
