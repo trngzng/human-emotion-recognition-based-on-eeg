@@ -23,8 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "sys_serial.h"
-#include "bsp_ext_adc.h"
+#include "sys_service_mng.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,11 +47,7 @@ SPI_HandleTypeDef hspi3;
 DMA_HandleTypeDef hdma_spi3_rx;
 
 /* USER CODE BEGIN PV */
-extern USBD_HandleTypeDef hUsbDeviceFS;
-SYS_SERIAL_HandleTypeDef uSerial;
-
-
-extern uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH];
+char testMsg[] = "Test message";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,6 +75,10 @@ int _write(int file, char *ptr, int len)
 //      printf("Sample[%d] = %d\n", i, samples[i]);
 //  }
 //}
+void Test(uint8_t *data, uint32_t size)
+{
+  printf("Test callback PubSub pattern: %c with size = %d\n", data, size);
+}
 /* USER CODE END 0 */
 
 /**
@@ -116,9 +115,11 @@ int main(void)
   MX_SPI1_Init();
   MX_USB_Device_Init();
   /* USER CODE BEGIN 2 */
-  SYS_Serial_Init(&uSerial, &hUsbDeviceFS);
-  BSP_EXT_ADC_Init();
-  BSP_EXT_ADC_StartReceivingSamples();
+  SYS_SERVICE_MNG_Init();
+  SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_DSP, 16, 8);
+  SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ADC_DSP, Test);
+  SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ADC_DSP, testMsg, sizeof(testMsg));
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -128,8 +129,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    SYS_DATA_MNG_FireEvent();
     HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
     HAL_Delay(1000);
+    SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ADC_DSP, testMsg, sizeof(testMsg));
   }
   /* USER CODE END 3 */
 }
