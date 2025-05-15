@@ -35,6 +35,14 @@ uint32_t curTick = 0;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
+void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
+{
+  if (hspi->Instance == SPI3)
+  {
+    BSP_EXT_ADC_ParseADCConversionData();
+  }
+}
+
 void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 {
   if (hspi->Instance == SPI3)

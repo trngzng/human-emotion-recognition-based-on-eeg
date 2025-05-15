@@ -76,7 +76,7 @@ BaseStatusTypeDef BSP_EXT_ADC_StopReceivingADCConversionData(void)
 {
   __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
 
-  HAL_SPI_DMAStop(uExtADC.data_spi);
+  __HAL_SPI_DISABLE(uExtADC.data_spi);
   
   return BS_OK;
 }
@@ -85,14 +85,21 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
 {
   __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
 
+  static BoolTypeDef parse_second_half = BS_FALSE;
 
-  for (int i = 0; i < 4; ++i)
+  uint8_t base = (parse_second_half == BS_TRUE) ? 2 : 0;
+
+  for (uint8_t i = 0; i < 2; ++i)
   {
-    uRxData[i].header = uRxBuffer[i * 4];
-    uRxData[i].data[0] = uRxBuffer[i * 4 + 1];
-    uRxData[i].data[1] = uRxBuffer[i * 4 + 2];
-    uRxData[i].data[2] = uRxBuffer[i * 4 + 3];
+    uint8_t idx = base + i;
+
+    uRxData[idx].header = uRxBuffer[idx * 4];
+    uRxData[idx].data[0] = uRxBuffer[idx * 4 + 1];
+    uRxData[idx].data[1] = uRxBuffer[idx * 4 + 2];
+    uRxData[idx].data[2] = uRxBuffer[idx * 4 + 3];
   }
+
+  parse_second_half = (parse_second_half == BS_TRUE) ? BS_FALSE : BS_TRUE;
 
   return BS_OK;
 }
