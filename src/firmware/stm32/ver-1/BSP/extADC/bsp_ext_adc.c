@@ -26,8 +26,18 @@
 /* Private enumerate/structure ---------------------------------------- */
 
 typedef struct __attribute__((packed)) {
-  uint8_t header;
-  uint8_t data[3];
+  union {
+    uint8_t raw;
+    struct {
+      uint8_t ch_id       : 3;  // Bits 0–2
+      uint8_t saturated   : 1;  // Bit 3
+      uint8_t filter_type : 1;  // Bit 4
+      uint8_t repeated    : 1;  // Bit 5
+      uint8_t not_settled: 1;  // Bit 6
+      uint8_t error       : 1;  // Bit 7
+    };
+  } header;
+  uint8_t data[3];  // 24-bit signed, MSB first
 } BSP_EXT_ADC_ConversionOutputFormatTypeDef;
 
 /* Private macros ----------------------------------------------------- */
@@ -93,7 +103,7 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
   {
     uint8_t idx = base + i;
 
-    uRxData[idx].header = uRxBuffer[idx * 4];
+    uRxData[idx].header.raw = uRxBuffer[idx * 4];
     uRxData[idx].data[0] = uRxBuffer[idx * 4 + 1];
     uRxData[idx].data[1] = uRxBuffer[idx * 4 + 2];
     uRxData[idx].data[2] = uRxBuffer[idx * 4 + 3];
