@@ -40,10 +40,18 @@ BaseStatusTypeDef SYS_SERVICE_MNG_Init(void)
   ret = SYS_ACQ_MNG_Init();
   __ASSERT(ret == BS_OK, BS_ERROR);
 
-  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, AD7768_SAMPLE_SIZE*4, 4);
+  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, AD7768_SAMPLE_SIZE*4, 5);
 __ASSERT(ret == BS_OK, BS_ERROR);
+
+  ret = SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, SYS_ACQ_MNG_ProcessData);
+  __ASSERT(ret == BS_OK, BS_ERROR);
   
   return BS_OK;
+}
+
+BaseStatusTypeDef SYS_SERVICE_MNG_Process(void)
+{
+  SYS_DATA_MNG_FireEvent();
 }
 /* Private definitions ------------------------------------------------ */
 

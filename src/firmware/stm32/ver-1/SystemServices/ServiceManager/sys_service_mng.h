@@ -41,6 +41,17 @@
  */
 BaseStatusTypeDef SYS_SERVICE_MNG_Init(void);
 
+/**
+ * @brief  Process all system services.
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef SYS_SERVICE_MNG_Process(void);
+
 #endif // __SYS_MNG_H
 
 /* End of file -------------------------------------------------------- */
