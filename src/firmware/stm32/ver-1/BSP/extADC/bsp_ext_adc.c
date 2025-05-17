@@ -18,6 +18,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "bsp_ext_adc.h"
+#include "sys_data_mng.h"
 #include "main.h"
 #include <string.h>
 
@@ -95,9 +96,9 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
 {
   __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
 
-  static BoolTypeDef parse_second_half = BS_FALSE;
+  static BoolTypeDef parseSecondHalf = BS_FALSE;
 
-  uint8_t base = (parse_second_half == BS_TRUE) ? 2 : 0;
+  uint8_t base = (parseSecondHalf == BS_TRUE) ? 2 : 0;
 
   for (uint8_t i = 0; i < 2; ++i)
   {
@@ -109,7 +110,17 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
     uRxData[idx].data[2] = uRxBuffer[idx * 4 + 3];
   }
 
-  parse_second_half = (parse_second_half == BS_TRUE) ? BS_FALSE : BS_TRUE;
+  if (parseSecondHalf)
+  {
+    // Send 24-bit sample N of 4 channels
+    SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, (uint8_t *)uRxData, sizeof(uRxData));
+    parseSecondHalf = BS_FALSE;
+  }
+  else
+  {
+    parseSecondHalf = BS_TRUE;
+  }
+
 
   return BS_OK;
 }
