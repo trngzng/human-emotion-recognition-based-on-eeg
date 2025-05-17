@@ -47,9 +47,8 @@ BaseStatusTypeDef SYS_ACQ_MNG_Init(void);
 /**
  * @brief  Process data from acquisition manager
  *
- * @param[in]     <param_name>  <param_despcription>
- * @param[out]    <param_name>  <param_despcription>
- * @param[inout]  <param_name>  <param_despcription>
+ * @param[in]     data          Pointer to the data buffer
+ * @param[in]     size          Size of the data buffer
  *
  * @attention  <API attention note>
  *
@@ -57,7 +56,7 @@ BaseStatusTypeDef SYS_ACQ_MNG_Init(void);
  *  - BS_OK: Success
  *  - BS_ERROR: Error
  */
-BaseStatusTypeDef SYS_ACQ_MNG_ProcessData(void);
+void SYS_ACQ_MNG_ProcessData(uint8_t *data, uint32_t size);
 
 #endif // __SYS_ACQ_MNG_H
 
