@@ -150,7 +150,7 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   __ASSERT(data_spi != NULL, BS_ERROR);
   __ASSERT(cs_port != NULL, BS_ERROR);
 
-  dev->device_type = AD7768_4_DEVICE;
+  dev->device_type = device_type;
   dev->config_spi = config_spi;
   dev->data_spi = data_spi;
   dev->cs_port = cs_port;
@@ -168,6 +168,14 @@ BaseStatusTypeDef DRV_AD7768_Init(DRV_AD7768_HandleTypeDef *dev,
   }
 
   dev->active = BS_TRUE;      // Set the device as active
+
+  uint8_t num_of_channels = (device_type == AD7768_4_DEVICE) ? AD7768_4_NUM_OF_CHANNLES : AD7768_NUM_OF_CHANNLES;
+
+  for (uint_fast8_t i = 0; i < num_of_channels; i++)
+  {
+    DRV_AD7768_SetGain(dev, i, 0x555555); // Set the default gain for each channel
+    DRV_AD7768_GetGain(dev, i);           // Get the gain of each channel
+  }
 
   DRV_AD7768_SoftReset(dev); // Perform a software reset
   AD7768_HelloWorld(dev);
@@ -488,6 +496,48 @@ BaseStatusTypeDef DRV_AD7768_SetReceivedBuffer(DRV_AD7768_HandleTypeDef *dev, ui
   HAL_SPI_Receive_DMA(dev->data_spi, buffer, size); // Start receiving data in DMA mode
 
   return BS_OK;
+}
+
+
+BaseStatusTypeDef DRV_AD7768_SetGain(DRV_AD7768_HandleTypeDef *dev, uint8_t ch, uint32_t gain)
+{
+  __ASSERT(dev->active == BS_TRUE, BS_ERROR);
+  __ASSERT(ch < AD7768_MAX_CHANNEL, BS_ERROR);
+
+  uint8_t addr = AD7768_GAIN_BASE_ADDRESS + ch * AD7768_GAIN_SIZEOF;
+  uint8_t gain_bytes[3] = {
+    (gain >> 16) & 0xFF,   // MSB
+    (gain >> 8) & 0xFF,    // MID
+    gain & 0xFF            // LSB
+  };
+  BaseStatusTypeDef ret;
+
+  for (int i = 0; i < 3; ++i) {
+    ret = AD7768_WriteRegister(dev, addr + i, gain_bytes[i]);
+    __ASSERT(ret == BS_OK, BS_ERROR);
+  }
+
+  dev->gain[ch] = gain;
+  return BS_OK;
+}
+
+uint32_t DRV_AD7768_GetGain(DRV_AD7768_HandleTypeDef *dev, uint8_t ch)
+{
+  __ASSERT(dev != NULL && dev->active == BS_TRUE, 0);
+  __ASSERT(ch < AD7768_MAX_CHANNEL, 0);
+
+  uint8_t addr = AD7768_GAIN_BASE_ADDRESS + ch * AD7768_GAIN_SIZEOF;
+  uint8_t msb, mid, lsb;
+  uint32_t gain;
+
+  msb = AD7768_ReadRegister(dev, addr + 0);
+  mid = AD7768_ReadRegister(dev, addr + 1);
+  lsb = AD7768_ReadRegister(dev, addr + 2);
+
+  gain = ((uint32_t)msb << 16) | ((uint32_t)mid << 8) | lsb;
+  dev->gain[ch] = gain;
+
+  return gain;
 }
 
 /* Private definitions ------------------------------------------------ */

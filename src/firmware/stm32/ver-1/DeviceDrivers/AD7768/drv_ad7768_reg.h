@@ -69,6 +69,10 @@
 // Write flag for SPI
 #define AD7768_WR_FLAG_MSK(x)     (0x80 | ((x) & 0x7F))
 
+// GAIN registers
+#define AD7768_GAIN_BASE_ADDRESS            0x36
+#define AD7768_GAIN_SIZEOF                  (3)
+
 // Output format
 #define AD7768_OUTPUT_MODE_TWOS_COMPLEMENT   0x01
 

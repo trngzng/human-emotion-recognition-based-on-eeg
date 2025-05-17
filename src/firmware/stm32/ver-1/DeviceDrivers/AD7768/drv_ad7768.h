@@ -89,19 +89,21 @@ typedef enum
 
 typedef struct
 {
-  DRV_AD7768_DeviceTypeDef device_type;                       /**< Device type (AD7768 or AD7768-4) */
-  SPI_HandleTypeDef *config_spi;                              /**< SPI handle for communication with AD7768 */
-  SPI_HandleTypeDef *data_spi;                                /**< SPI handle for received data */
-  GPIO_TypeDef *cs_port;                                      /**< GPIO port for chip select pin */
-  uint16_t cs_pin;                                            /**< GPIO pin for chip select pin */
-  uint8_t mclk;                                               /**< MCLK frequency in MHz */
-  uint8_t output_datalines;                                   /**< Number of data output lines (1, 2, 4, or 8) */
-  DRV_AD7768_ChannelTypeDef channel[AD7768_MAX_CHANNEL];      /**< Array to store channel activity status */
-  uint16_t sampling_freq;                                     /**< Sampling frequency in Hz */
-  DRV_AD7768_PowerModesTypeDef power_mode;                    /**< Current power mode of the device */
-  DRV_AD7768_AvailFreqTypeDef avail_freq[AD7768_NUM_OF_POWER_MODES]; /**< Frequency configuration for each power mode */
-  BoolTypeDef active;                             /**< Flag to indicate if the device is initialized */
+  DRV_AD7768_DeviceTypeDef device_type;                               /**< Device type (AD7768 or AD7768-4) */
+  SPI_HandleTypeDef *config_spi;                                      /**< SPI handle for communication with AD7768 */
+  SPI_HandleTypeDef *data_spi;                                        /**< SPI handle for received data */
+  GPIO_TypeDef *cs_port;                                              /**< GPIO port for chip select pin */
+  uint16_t cs_pin;                                                    /**< GPIO pin for chip select pin */
+  uint8_t mclk;                                                       /**< MCLK frequency in MHz */
+  uint8_t output_datalines;                                           /**< Number of data output lines (1, 2, 4, or 8) */
+  DRV_AD7768_ChannelTypeDef channel[AD7768_MAX_CHANNEL];              /**< Array to store channel activity status */
+  uint16_t sampling_freq;                                             /**< Sampling frequency in Hz */
+  DRV_AD7768_PowerModesTypeDef power_mode;                            /**< Current power mode of the device */
+  DRV_AD7768_AvailFreqTypeDef avail_freq[AD7768_NUM_OF_POWER_MODES];  /**< Frequency configuration for each power mode */
+  BoolTypeDef active;                                                 /**< Flag to indicate if the device is initialized */
   uint8_t device_status;
+  uint32_t gain[AD7768_MAX_CHANNEL];                                  /**< Gain for each channel */
+  uint32_t offset[AD7768_MAX_CHANNEL];                                /**< Offset for each channel */
 } DRV_AD7768_HandleTypeDef;
 
 /* Public macros ------------------------------------------------------ */
@@ -335,6 +337,34 @@ BaseStatusTypeDef DRV_AD7768_SetFilterType(DRV_AD7768_HandleTypeDef *dev, uint8_
  *  - BS_ERROR: Error
  */
 BaseStatusTypeDef DRV_AD7768_SetReceivedBuffer(DRV_AD7768_HandleTypeDef *dev, uint8_t *buffer, uint32_t size);
+
+/**
+ * @brief  Get the current gain of one channel of the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     ch            The channel number to set the gain from (0-7 for AD7768, 0-3 for AD7768-4)
+ * @param[out]    gain          The desired gain value
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - BS_OK: Success
+ *  - BS_ERROR: Error
+ */
+BaseStatusTypeDef DRV_AD7768_SetGain(DRV_AD7768_HandleTypeDef *dev, uint8_t ch, uint32_t gain);
+
+/**
+ * @brief  Get the current gain of one channel of the AD7768 device.
+ *
+ * @param[in]     dev           Pointer to the DRV_AD7768_HandleTypeDef structure
+ * @param[in]     ch            The channel number to get the gain from (0-7 for AD7768, 0-3 for AD7768-4)
+ *
+ * @attention  <API attention note>
+ *
+ * @return  
+ *  - The current gain value of the specified channel
+ */
+uint32_t DRV_AD7768_GetGain(DRV_AD7768_HandleTypeDef *dev, uint8_t ch);
 
 #endif // __DRV_AD7768_CONFIG_H
 
