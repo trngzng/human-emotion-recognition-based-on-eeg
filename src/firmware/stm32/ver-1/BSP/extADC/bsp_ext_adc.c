@@ -49,9 +49,10 @@ extern SPI_HandleTypeDef hspi3;
 
 /* Private variables -------------------------------------------------- */
 static DRV_AD7768_HandleTypeDef uExtADC; /**< The external ADC stucture */
-static uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH] = {0}; /**< The buffer to store the samples from the ADC */
+static volatile uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH] = {0}; /**< The buffer to store the samples from the ADC */
 
-static BSP_EXT_ADC_ConversionOutputFormatTypeDef uRxData[4] = {0}; /**< The buffer to store the samples from the ADC */
+static volatile BSP_EXT_ADC_ConversionOutputFormatTypeDef uRxData[4] = {0}; /**< The buffer to store the ADC conversion data from the ADC */
+static volatile uint32_t uRawSamples[2] = {0}; /**< The buffer to store the raw samples from the ADC */
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -108,12 +109,18 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
     uRxData[idx].data[0] = uRxBuffer[idx * 4 + 1];
     uRxData[idx].data[1] = uRxBuffer[idx * 4 + 2];
     uRxData[idx].data[2] = uRxBuffer[idx * 4 + 3];
+
+    if (!parseSecondHalf)
+    {
+      uRawSamples[idx] = (uRxData[idx].data[0] << 16) | (uRxData[idx].data[1] << 8) | uRxData[idx].data[2];
+    }
+
   }
 
   if (parseSecondHalf)
   {
     // Send 24-bit sample N of 4 channels
-    SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, (uint8_t *)uRxData, sizeof(uRxData));
+    SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, (uint8_t *)uRawSamples, sizeof(uRawSamples));
     parseSecondHalf = BS_FALSE;
   }
   else
