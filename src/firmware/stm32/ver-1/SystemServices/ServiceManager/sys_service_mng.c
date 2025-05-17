@@ -14,7 +14,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "sys_service_mng.h"
-
+#include "bsp_dwt.h"
 /* Private defines ---------------------------------------------------- */
 
 /* Private enumerate/structure ---------------------------------------- */
@@ -30,9 +30,18 @@
 /* Function definitions ----------------------------------------------- */
 BaseStatusTypeDef SYS_SERVICE_MNG_Init(void)
 {
-  SYS_Serial_Init();
-  SYS_ACQ_MNG_Init();
+  BaseStatusTypeDef ret;
+
+  ret = SYS_Serial_Init();
+  __ASSERT(ret == BS_OK, BS_ERROR);
+
   SYS_DATA_MNG_Init();
+
+  ret = SYS_ACQ_MNG_Init();
+  __ASSERT(ret == BS_OK, BS_ERROR);
+
+  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, AD7768_SAMPLE_SIZE*4, 4);
+__ASSERT(ret == BS_OK, BS_ERROR);
   
   return BS_OK;
 }
