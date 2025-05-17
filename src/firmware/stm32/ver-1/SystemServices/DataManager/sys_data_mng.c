@@ -16,7 +16,7 @@
 #include "sys_data_mng.h"
 
 /* Private defines ---------------------------------------------------- */
-#define SYS_DATA_MNG_BUFF_SIZE  (255) /*!< Description of PRIVATE_DEFINE_1 */
+#define SYS_DATA_MNG_BUFF_SIZE  (2048) /*!< Description of PRIVATE_DEFINE_1 */
 
 /* Private enumerate/structure ---------------------------------------- */
 
@@ -105,7 +105,7 @@ BaseStatusTypeDef SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_IDTopicTypeDef id, uint8_
   __ASSERT(size <= sTopicList[id].message_size, BS_ERROR);
   __ASSERT(sTopicList[id].num_of_subscribers > 0, BS_ERROR);
   __ASSERT(CB_SpaceCount(&sTopicList[id].cbuf) >= size, BS_ERROR);
-  __ASSERT(CB_SpaceCount(&sTopicList[id].cbuf) >= sTopicList[id].message_size, BS_ERROR);
+  __ASSERT(size <= sTopicList[id].message_size, BS_ERROR);
   uint32_t ret;
 
   ret = CB_WriteData(&sTopicList[id].cbuf, msg, size);
@@ -132,7 +132,7 @@ BaseStatusTypeDef SYS_DATA_MNG_FireEvent()
 
   for (uint_fast8_t i = 0; i < sNumOfTopics; i++)
   {
-    if ((CB_SpaceCount(&sTopicList[i].cbuf) / sTopicList[i].message_size) != 0)
+    if ((CB_DataCount(&sTopicList[i].cbuf) / sTopicList[i].message_size) != 0)
     {
       size = sTopicList[i].message_size;
       msg = sCbufReadBuffer;
