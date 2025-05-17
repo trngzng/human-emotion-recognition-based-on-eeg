@@ -115,6 +115,7 @@ int main(void)
   MX_USB_Device_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
+  BSP_DWT_Init();
   SYS_SERVICE_MNG_Init();
 
   /* USER CODE END 2 */
