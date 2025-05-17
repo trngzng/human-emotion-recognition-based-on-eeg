@@ -133,6 +133,7 @@ int main(void)
       HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
       uTick = HAL_GetTick();
     }
+    SYS_SERVICE_MNG_Process();
 
   }
   /* USER CODE END 3 */
