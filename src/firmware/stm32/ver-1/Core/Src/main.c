@@ -48,6 +48,7 @@ DMA_HandleTypeDef hdma_spi3_rx;
 
 /* USER CODE BEGIN PV */
 char testMsg[] = "Test message";
+uint32_t uTick = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -117,7 +118,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   BSP_DWT_Init();
   SYS_SERVICE_MNG_Init();
-
+  uTick = HAL_GetTick();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -127,6 +128,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    if (HAL_GetTick() - uTick > 1000)
+    {
+      HAL_GPIO_TogglePin(USER_LED_GPIO_Port, USER_LED_Pin);
+      uTick = HAL_GetTick();
+    }
+
   }
   /* USER CODE END 3 */
 }
