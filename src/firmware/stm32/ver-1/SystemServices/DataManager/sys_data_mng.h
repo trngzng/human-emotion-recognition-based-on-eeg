@@ -30,9 +30,10 @@ typedef void (*SYS_DATA_MNG_CbFunc)(uint8_t *, uint32_t); /**< The callback func
  */
 typedef enum 
 {
-  SYS_DATA_MNG_TOPIC_ADC_DSP = 0x00,  /**< Description of PUBLIC_ENUM_1 */
-  SYS_DATA_MNG_TOPIC_ADC_USB,         /**< Description of PUBLIC_ENUM_1 */
-  SYS_DATA_MNG_TOPIC_DSP_USB,         /**< Description of PUBLIC_ENUM_1 */
+  SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS = 0x00,  /**< Description of PUBLIC_ENUM_1 */
+  SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB,         /**< Description of PUBLIC_ENUM_1 */
+  SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_DSP,         /**< Description of PUBLIC_ENUM_1 */
+  SYS_DATA_MNG_TOPIC_DSP_TO_USB,             /**< Description of PUBLIC_ENUM_1 */
   SYS_DATA_MNG_MAX_TOPIC
 } SYS_DATA_MNG_IDTopicTypeDef;
 
