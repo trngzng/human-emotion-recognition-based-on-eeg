@@ -1,13 +1,12 @@
 /**
- * @file       <file_name>.h
+ * @file       bsp_dwt.h
  * @copyright  Copyright (C) 2024 GNG. All rights reserved.
  * @license    None.
- * @version    major.minor.patch
- * @date       yyyy-mm-dd
- * @author     <first_name_1> <last_name_1>
- * @author     <first_name_2> <last_name_2>
+ * @version    1.0.0
+ * @date       2025-05-17
+ * @author     Giang Phan
  *             
- * @brief      <A brief description of the content of the file>
+ * @brief      Header file for the DWT (Data Watchpoint and Trace) unit.
  *             
  * @note          
  * @example    None
@@ -17,7 +16,7 @@
 #define __BSP_DWT_H
 
 /* Includes ----------------------------------------------------------- */
-#include "stm32fg4xx_hal.h"
+#include "stm32g4xx_hal.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
