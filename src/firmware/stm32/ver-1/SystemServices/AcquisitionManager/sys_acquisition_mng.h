@@ -20,7 +20,7 @@
 #include "bsp_ext_adc.h"
 /* Public defines ----------------------------------------------------- */
 #define SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL  (2) /*!< Number of an EEG channel of this project*/
-#define SYS_ACQ_MNG_MAX_EEG_SAMPLES     (8) /*!< Maximum EEG samples stored in buffer*/
+#define SYS_ACQ_MNG_MAX_EEG_SAMPLES     (7) /*!< Maximum EEG samples stored in buffer*/
 /* Public enumerate/structure ----------------------------------------- */
 
 /* Public macros ------------------------------------------------------ */

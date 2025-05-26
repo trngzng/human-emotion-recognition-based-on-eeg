@@ -32,6 +32,8 @@ BaseStatusTypeDef SYS_SERVICE_MNG_Init(void)
 {
   BaseStatusTypeDef ret;
 
+  BSP_DWT_Init();
+
   ret = SYS_Serial_Init();
   __ASSERT(ret == BS_OK, BS_ERROR);
 
@@ -40,18 +42,25 @@ BaseStatusTypeDef SYS_SERVICE_MNG_Init(void)
   ret = SYS_ACQ_MNG_Init();
   __ASSERT(ret == BS_OK, BS_ERROR);
 
-  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, AD7768_SAMPLE_SIZE*4, 5);
+  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, 16, 5);
 __ASSERT(ret == BS_OK, BS_ERROR);
 
   ret = SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, SYS_ACQ_MNG_ProcessData);
   __ASSERT(ret == BS_OK, BS_ERROR);
-  
+
+//  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL*SYS_ACQ_MNG_MAX_EEG_SAMPLES, 5);
+//  __ASSERT(ret == BS_OK, BS_ERROR);
+//
+//  ret = SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, SYS_Serial_SendSamples);
+//  __ASSERT(ret == BS_OK, BS_ERROR);
+
   return BS_OK;
 }
 
 BaseStatusTypeDef SYS_SERVICE_MNG_Process(void)
 {
   SYS_DATA_MNG_FireEvent();
+  return BS_OK;
 }
 /* Private definitions ------------------------------------------------ */
 

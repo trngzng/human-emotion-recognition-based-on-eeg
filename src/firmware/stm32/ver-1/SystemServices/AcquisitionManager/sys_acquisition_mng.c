@@ -14,6 +14,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "sys_acquisition_mng.h"
+#include "sys_data_mng.h"
 #include <string.h>
 /* Private defines ---------------------------------------------------- */
 
@@ -24,8 +25,8 @@
 /* Public variables --------------------------------------------------- */
 
 /* Private variables -------------------------------------------------- */
-static volatile uint32_t rawSamples[SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL][SYS_ACQ_MNG_MAX_EEG_SAMPLES]; /**< Raw samples from ADC */
-static volatile float filteredSamples[SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL][SYS_ACQ_MNG_MAX_EEG_SAMPLES]; /**< Samples after the filter processing */
+static int32_t rawSamples[SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL][SYS_ACQ_MNG_MAX_EEG_SAMPLES]; /**< Raw samples from ADC */
+static float filteredSamples[SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL][SYS_ACQ_MNG_MAX_EEG_SAMPLES]; /**< Samples after the filter processing */
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
@@ -35,8 +36,6 @@ BaseStatusTypeDef SYS_ACQ_MNG_Init(void)
 
   ret = BSP_EXT_ADC_Init();
   __ASSERT(ret == BS_OK, BS_ERROR); // Check if the ADC initialization was successful
-  ret = BSP_EXT_ADC_StartReceivingADCConversionData();
-  __ASSERT(ret == BS_OK, BS_ERROR); // Check if the ADC started receiving ADC conversion data successfully
 
   return BS_OK;   
 }
@@ -44,12 +43,27 @@ BaseStatusTypeDef SYS_ACQ_MNG_Init(void)
 void SYS_ACQ_MNG_ProcessData(uint8_t *data, uint32_t size)
 {
   static uint8_t sampleCount = 0;
+
   UNUSED(size);
-  for (uint_fast8_t i = 0; i < 2; i++)
+
+  for (uint_fast8_t ch = 0; ch < 2; ch++)  // 2 channel
   {
-    rawSamples[i][sampleCount] = data[i];
+    uint8_t *p = &data[ch * 3];
+    uint32_t raw24Bit = (p[0] << 16) | (p[1] << 8) | p[2];
+
+    // Sign extend 24-bit to 32-bit signed
+    if ((raw24Bit & 0x800000) == 0x800000)
+      raw24Bit |= 0xFF000000;
+
+    rawSamples[ch][sampleCount] = (int32_t)raw24Bit;
+
   }
-  if (sampleCount++ == SYS_ACQ_MNG_MAX_EEG_SAMPLES) sampleCount = 0;
+
+  if (sampleCount++ == SYS_ACQ_MNG_MAX_EEG_SAMPLES)
+  {
+    sampleCount = 0;
+//    SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, (uint8_t *)rawSamples, sizeof(rawSamples));
+  }
 }
 /* Private definitions ------------------------------------------------ */
 

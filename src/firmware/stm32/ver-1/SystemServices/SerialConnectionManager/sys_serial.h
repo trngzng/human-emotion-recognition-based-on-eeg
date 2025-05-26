@@ -72,7 +72,21 @@ BaseStatusTypeDef SYS_Serial_Init();
  *  - SYS_SERIAL_READY: Success
  *  - else: Error
  */
-BaseStatusTypeDef SYS_Serial_SendSamples(float *psample, uint8_t num);
+BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *psample, uint8_t num);
+
+/**
+ * @brief  Print samples on the terminal
+ *
+ * @param[in]     psample       Pointer to samples' array
+ * @param[in]     num           Length of data
+ *
+ * @attention  Must initialize the USB device libraries before use
+ *
+ * @return
+ *  - SYS_SERIAL_READY: Success
+ *  - else: Error
+ */
+BaseStatusTypeDef SYS_Serial_PrintSamples(uint8_t *psamples, uint8_t num);
 
 #endif // __SYS_SERIAL_H
 

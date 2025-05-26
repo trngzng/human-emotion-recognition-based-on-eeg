@@ -16,10 +16,11 @@
 #include "sys_serial.h"
 #include "common.h"
 #include "usbd_cdc_if.h"
+#include "bsp_dwt.h"
 
 /* Private defines ---------------------------------------------------- */
-#define PACKET_SOP  (0xAAU)
-#define PACKET_EOP  (0x55U)
+#define PACKET_SOP  (0x55U)
+#define PACKET_EOP  (0xAAU)
 
 /* Private enumerate/structure ---------------------------------------- */
 
@@ -47,12 +48,11 @@ typedef struct
 **/
 typedef struct __attribute__((packed))
 {
-  uint8_t sop;
-  uint8_t length : 5;
-  uint8_t cmd : 3;
-  uint8_t data[32];
-  uint16_t crc;
-  uint8_t eop;
+  uint8_t sop[3];
+  uint8_t length;
+  uint8_t cmd;
+  uint8_t data[56];
+  uint8_t eop[3];
 } SYS_SERIAL_PacketTypeDef;
 
 /* Private macros ----------------------------------------------------- */
@@ -63,12 +63,11 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 /* Private variables -------------------------------------------------- */
 static SYS_SERIAL_HandleTypeDef sSerial; /**< System serial instance */
 
-SYS_SERIAL_PacketTypeDef packetBuf = {PACKET_SOP,
+SYS_SERIAL_PacketTypeDef packetBuf = {{PACKET_SOP, PACKET_SOP, PACKET_SOP},
                                       SYS_SERIAL_CMD_DEVICE_MODE,
                                       0,
                                       {0},
-                                      0,
-                                      PACKET_EOP};
+                                      {PACKET_EOP, PACKET_EOP, PACKET_EOP}};
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -82,36 +81,51 @@ BaseStatusTypeDef SYS_Serial_Init()
   sSerial.pDev = &hUsbDeviceFS;
   sSerial.status = SYS_SERIAL_READY;
 
+
   return BS_OK;
 }
 
-BaseStatusTypeDef SYS_Serial_SendSamples(float *psample, uint8_t num)
+BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *psample, uint8_t num)
 {
-  __ASSERT(sSerial.status == SYS_SERIAL_RESET, BS_ERROR);
+  __ASSERT(sSerial.status == SYS_SERIAL_READY, BS_ERROR);
   __ASSERT(psample != NULL, BS_ERROR);
-  __ASSERT((num > 0) && (num <= 8), BS_ERROR);
-
+  __ASSERT(num > 0, BS_ERROR);
   uint8_t result;
-  packetBuf.crc = 0;
 
-  for (uint_fast8_t i = 0; i < num; i++)
-  {
-    uint32_t *pTemp = (uint32_t *)(psample + i);
+  memcpy(packetBuf.data, psample, num);
+  packetBuf.length = num;
 
-    packetBuf.data[0 + i*sizeof(float)] = (uint8_t)(*pTemp >> 24);
-    packetBuf.data[1 + i*sizeof(float)] = (uint8_t)(*pTemp >> 16);
-    packetBuf.data[2 + i*sizeof(float)] = (uint8_t)(*pTemp >> 8);
-    packetBuf.data[3 + i*sizeof(float)] = (uint8_t)*pTemp;
-  }
-  packetBuf.length = num*sizeof(float) - 1;
+  result = CDC_Transmit_FS((uint8_t *)&packetBuf, sizeof(packetBuf));
 
-  uint8_t buffer[sizeof(SYS_SERIAL_PacketTypeDef)];
-  memcpy(buffer, &packetBuf, sizeof(SYS_SERIAL_PacketTypeDef));
-  result = CDC_Transmit_FS(buffer, sizeof(packetBuf));
   __ASSERT(result == 0, BS_ERROR);
 
   return BS_OK;
 }
+
+BaseStatusTypeDef SYS_Serial_PrintSamples(uint8_t *data, uint8_t num)
+{
+  __ASSERT(sSerial.status == SYS_SERIAL_READY, BS_ERROR);
+  __ASSERT(data != NULL, BS_ERROR);
+  __ASSERT(num > 0, BS_ERROR);
+
+  // Ép kiểu con trỏ sang int32_t*
+  int32_t *samples = (int32_t *)data;
+
+  char msg[256];
+  uint16_t pos = 0;
+
+  // Timestamp
+  float t_us = BSP_DWT_CyclesToUs(BSP_DWT_GetCycles());
+  int n = snprintf(msg, sizeof(msg), "TS: %.2f us | ", t_us);
+  pos += n;
+  // Gửi USB
+  printf("%s", msg);
+
+  return BS_OK;
+}
+
+
+
 /* Private definitions ----------------------------------------------- */
 
 /* End of file -------------------------------------------------------- */

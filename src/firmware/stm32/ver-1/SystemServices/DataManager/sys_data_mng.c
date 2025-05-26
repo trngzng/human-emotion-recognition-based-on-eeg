@@ -50,6 +50,7 @@ static SYS_DATA_MNG_IDTopicTypeDef sNumOfTopics = 0;                /**< Current
 void SYS_DATA_MNG_Init(void)
 {
   memset(&sTopicList, 0, sizeof(sTopicList));
+  memset(sMsgBroker, 0, sizeof(sMsgBroker));
   memset(sCbufReadBuffer, 0, sizeof(sCbufReadBuffer));
 }
 
