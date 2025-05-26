@@ -57,7 +57,6 @@
 
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_FS;
-extern DMA_HandleTypeDef hdma_spi3_rx;
 extern SPI_HandleTypeDef hspi3;
 /* USER CODE BEGIN EV */
 
@@ -242,20 +241,6 @@ void SPI3_IRQHandler(void)
   /* USER CODE BEGIN SPI3_IRQn 1 */
 
   /* USER CODE END SPI3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA2 channel6 global interrupt.
-  */
-void DMA2_Channel6_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA2_Channel6_IRQn 0 */
-
-  /* USER CODE END DMA2_Channel6_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_spi3_rx);
-  /* USER CODE BEGIN DMA2_Channel6_IRQn 1 */
-
-  /* USER CODE END DMA2_Channel6_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

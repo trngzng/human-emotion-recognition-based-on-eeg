@@ -44,7 +44,6 @@
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
-DMA_HandleTypeDef hdma_spi3_rx;
 
 /* USER CODE BEGIN PV */
 char testMsg[] = "Test message";
@@ -54,7 +53,6 @@ uint32_t uTick = 0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
 /* USER CODE BEGIN PFP */
@@ -68,18 +66,6 @@ int _write(int file, char *ptr, int len)
     CDC_Transmit_FS((uint8_t*) ptr, len); return len;
 }
 
-//void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-//{
-//  if (hspi->Instance == hspi3.Instance)
-//  {
-//    for (uint_fast8_t i = 0; i < 16; i++)
-//      printf("Sample[%d] = %d\n", i, samples[i]);
-//  }
-//}
-void Test(uint8_t *data, uint32_t size)
-{
-  printf("Test callback PubSub pattern: %c with size = %d\n", data, size);
-}
 /* USER CODE END 0 */
 
 /**
@@ -111,13 +97,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_SPI1_Init();
   MX_USB_Device_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-  BSP_DWT_Init();
+  HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
   SYS_SERVICE_MNG_Init();
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
   uTick = HAL_GetTick();
   /* USER CODE END 2 */
 
@@ -250,7 +236,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.Direction = SPI_DIRECTION_2LINES_RXONLY;
   hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi3.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
@@ -265,23 +251,6 @@ static void MX_SPI3_Init(void)
   /* USER CODE BEGIN SPI3_Init 2 */
 
   /* USER CODE END SPI3_Init 2 */
-
-}
-
-/**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMAMUX1_CLK_ENABLE();
-  __HAL_RCC_DMA2_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA2_Channel6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Channel6_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Channel6_IRQn);
 
 }
 
@@ -353,18 +322,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB0 PB1 PB2 PB10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_10;
+  /*Configure GPIO pins : PB0 PB1 PB2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB11 PB12 PB13 PB14
-                           PB15 PB3 PB4 PB6
-                           PB7 PB8 PB9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14
-                          |GPIO_PIN_15|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_6
-                          |GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
+  /*Configure GPIO pins : PB10 PB11 PB12 PB13
+                           PB14 PB15 PB3 PB4
+                           PB6 PB7 PB8 PB9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12|GPIO_PIN_13
+                          |GPIO_PIN_14|GPIO_PIN_15|GPIO_PIN_3|GPIO_PIN_4
+                          |GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
