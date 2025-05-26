@@ -20,6 +20,7 @@
 #include "bsp_callback.h"
 #include "bsp_ext_adc.h"
 #include "main.h"
+#include "bsp_dwt.h"
 
 /* Private defines ---------------------------------------------------- */
 
@@ -35,19 +36,30 @@ uint32_t curTick = 0;
 /* Private function prototypes ---------------------------------------- */
 
 /* Function definitions ----------------------------------------------- */
-void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-  if (hspi->Instance == SPI3)
-  {
-    BSP_EXT_ADC_ParseADCConversionData();
-  }
-}
+//void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
+//{
+//  if (hspi->Instance == SPI3)
+//  {
+//    BSP_EXT_ADC_ParseADCConversionData();
+//  }
+//}
+//
+//void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+//{
+//  if (hspi->Instance == SPI3)
+//  {
+//    BSP_EXT_ADC_ParseADCConversionData();
+//  }
+//}
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if (hspi->Instance == SPI3)
+  if (GPIO_Pin == GPIO_PIN_15)
   {
+//    __BSP_DWT_START_MEASUREMENT(AdcReception);
+    BSP_EXT_ADC_StartReceivingADCConversionData();
     BSP_EXT_ADC_ParseADCConversionData();
+//    __BSP_DWT_STOP_MEASUREMENT(AdcReception);
   }
 }
 
