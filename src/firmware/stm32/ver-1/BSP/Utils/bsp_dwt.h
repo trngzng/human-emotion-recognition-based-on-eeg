@@ -17,6 +17,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "stm32g4xx_hal.h"
+#include "stdio.h"
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -36,7 +37,7 @@
 #define __BSP_DWT_START_MEASUREMENT(label)   uint32_t __StartMeasurement_##label = BSP_DWT_GetCycles()
 
 #define __BSP_DWT_STOP_MEASUREMENT(label)    uint32_t __StopMeasurement_##label = BSP_DWT_GetCycles(); \
-                           printf("[%-10s] %.2f us\r\n", #label, BSP_DWT_ElapsedUs(_start_##label, _stop_##label))
+                           printf("[%-10s] %.2f us\r\n", #label, BSP_DWT_ElapsedUs(__StartMeasurement_##label, __StopMeasurement_##label))
 
 /* Public variables --------------------------------------------------- */
 
