@@ -2,8 +2,8 @@
 #include <QDebug>
 
 // Các hằng số cho byte bắt đầu và byte kết thúc
-const uint8_t startOfPacket = 0xAA;
-const uint8_t endOfPacket = 0x55;
+const uint8_t startByte = 0x55;
+const uint8_t endByte = 0xAA;
 
 DataParser::DataParser(QObject *parent)
     : QThread(parent)
@@ -23,6 +23,7 @@ DataParser::~DataParser()
 void DataParser::packetDectection(const QList<QByteArray> &inputData)
 {
     static QByteArray packetBuffer;
+    static int len;
 
     for (const QByteArray &chunk : inputData)
     {
@@ -32,41 +33,119 @@ void DataParser::packetDectection(const QList<QByteArray> &inputData)
             switch (DataParser::currentState)
             {
             case IDLE:
-                if (byte == startOfPacket)
+                if (byte == startByte)
                 {
                     packetBuffer.clear();
                     packetBuffer.append(byte);
-                    DataParser::currentState = WAIT_CMD;
+                    DataParser::currentState = START_BYTE_DETECTION;
                 }
-                break;
-            case WAIT_CMD:
-                packetBuffer.append(byte);
-                DataParser::currentState = WAIT_DATA;
-                break;
-            case WAIT_DATA:
-                packetBuffer.append(byte);
-                if (packetBuffer.size() >= 34)
+                else
                 {
-                    DataParser::currentState = WAIT_END;
-                }
-                break;
-            case WAIT_CRC:
-                packetBuffer.append(byte);
-                if (packetBuffer.size() >= 36)
-                {
-                    DataParser::currentState = WAIT_END;
-                }
-                break;
-            case WAIT_END:
-                packetBuffer.append(byte);
-                if (byte == endOfPacket) {
-                    // Gói tin hoàn chỉnh được nhận
-                    emit receivedPacket(packetBuffer);
                     DataParser::currentState = IDLE;
+                }
+                break;
+
+            case START_BYTE_DETECTION:
+                if (byte == startByte)
+                {
+                    packetBuffer.append(byte);
+                    DataParser::currentState = WAIT_SOP;
+                }
+                else
+                {
                     packetBuffer.clear();
+                    DataParser::currentState = IDLE;
                 }
 
                 break;
+
+            case WAIT_SOP:
+                if (byte == startByte)
+                {
+                    packetBuffer.append(byte);
+                    DataParser::currentState = PACKET_DETECTION;
+                }
+                else
+                {
+                    packetBuffer.clear();
+                    DataParser::currentState = IDLE;
+                }
+                break;
+
+            case PACKET_DETECTION:
+            case WAIT_VALID_CMD:
+                if (byte == 0x00)
+                {
+                    packetBuffer.append(byte);
+                    DataParser::currentState = WAIT_VALID_LEN;
+                }
+                else
+                {
+                    packetBuffer.clear();
+                    DataParser::currentState = IDLE;
+                }
+                break;
+
+            case WAIT_VALID_LEN:
+                len = byte;
+                packetBuffer.append(byte);
+                DataParser::currentState = RECEIVE_PAYLOAD;
+                break;
+
+            case RECEIVE_PAYLOAD:
+                packetBuffer.append(byte);
+                len--;
+                if (len > 0)
+                {
+                    DataParser::currentState = RECEIVE_PAYLOAD;
+                }
+                else
+                {
+                    DataParser::currentState = WAIT_END_BYTES;
+                }
+
+                break;
+
+            case WAIT_END_BYTES:
+                if (byte == endByte)
+                {
+                    packetBuffer.append(byte);
+                    DataParser::currentState = CONT_WAIT_END_BYTE;
+                }
+                else
+                {
+                    packetBuffer.clear();
+                    DataParser::currentState = IDLE;
+                }
+                break;
+
+            case CONT_WAIT_END_BYTE:
+                if (byte == endByte)
+                {
+                    packetBuffer.append(byte);
+                    DataParser::currentState = WAIT_LAST_END_BYTE;
+                }
+                else
+                {
+                    packetBuffer.clear();
+                    DataParser::currentState = IDLE;
+                }
+                break;
+
+            case WAIT_LAST_END_BYTE:
+                if (byte == endByte)
+                {
+                    packetBuffer.append(byte);
+                    DataParser::currentState = IDLE;
+                    DataParser::packetParser(packetBuffer);
+                }
+                else
+                {
+                    packetBuffer.clear();
+                    DataParser::currentState = IDLE;
+                }
+                break;
+
             default:
                 DataParser::currentState = IDLE;
                 packetBuffer.clear();
@@ -78,11 +157,16 @@ void DataParser::packetDectection(const QList<QByteArray> &inputData)
 
 void DataParser::packetParser(const QByteArray &data)
 {
-    if ((static_cast<uint8_t>(data.at(0)) == startOfPacket) && (static_cast<uint8_t>(data.at(data.size() - 1)) == endOfPacket))
+    for (int i = 0; i < 4; i++)
     {
-        memcpy(&(DataParser::currentPacket), data.constData(), sizeof(PacketTypeDef));
-        emit parsedPacket(DataParser::currentPacket);
+        eegChannel1[i] = static_cast<uint8_t>(data[5 + i]);
+        eegChannel2[i] = static_cast<uint8_t>(data[9 + i]);
     }
+
+    QByteArray eeg1(reinterpret_cast<const char*>(eegChannel1), 4);
+    QByteArray eeg2(reinterpret_cast<const char*>(eegChannel2), 4);
+
+    emit valueOfEegChannels(eeg1, eeg2);
 }
 
 void DataParser::run()

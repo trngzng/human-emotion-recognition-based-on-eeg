@@ -32,8 +32,27 @@ MainWindow::MainWindow(QWidget *parent)
     }
     ui->cBSerialBaud->addItems(strBaudRates);
 
+
+    // ====== Thêm phần Plotter ======
+    rawEegChannel1 = new Plotter(this);
+    rawEegChannel2 = new Plotter(this);
+
+    // Gắn Plotter vào giao diện (GroupBox, Layout, hoặc Frame trong UI)
+    QVBoxLayout *layout1 = new QVBoxLayout(ui->gBEegChannel1);  // Giả sử gBEegChannel1 là GroupBox trong UI
+    layout1->addWidget(rawEegChannel1);
+
+    QVBoxLayout *layout2 = new QVBoxLayout(ui->gBEegChannel2);
+    layout2->addWidget(rawEegChannel2);
+
     connect(&serialDevice, &Serial::receivedData, &dataParser, &DataParser::packetDectection, Qt::QueuedConnection);
-    connect(&dataParser, &DataParser::parsedPacket, this, &MainWindow::fillParsedPackets, Qt::QueuedConnection);
+    connect(&dataParser, &DataParser::valueOfEegChannels, this, &MainWindow::convertValueEegChannels, Qt::QueuedConnection);
+    // Timer chung update tất cả Plotter
+    QTimer *updateTimer = new QTimer(this);
+    connect(updateTimer, &QTimer::timeout, this, [=]() {
+        rawEegChannel1->processBuffer();
+        rawEegChannel2->processBuffer();
+    });
+    updateTimer->start(20); // 50fps mượt mà
 }
 
 MainWindow::~MainWindow()
@@ -73,6 +92,10 @@ void MainWindow::on_pBtnSerialConnect_clicked()
         ui->tBrTransceivedData->append("<span style=\"color: rgb(170,0,0);\">"
                                        + ui->cBSerialName->currentText()
                                        + " DISCONNECTED" + "</span>");
+
+        // === Clear dữ liệu Plotter ===
+        rawEegChannel1->clearData();
+        rawEegChannel2->clearData();
     }
 }
 
@@ -117,15 +140,49 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         return QMainWindow::eventFilter(obj, event);
 }
 
-void MainWindow::fillParsedPackets(const PacketTypeDef &packet)
+float MainWindow::convertADCtoVoltage_AD7768(int32_t data, float vref, int32_t gain, int32_t offset)
 {
-    ui->tBrTransceivedData->append("CMD = " + QString("%1 ").arg(packet.cmd, 2, 16, QChar('0')).toUpper());
-    ui->tBrTransceivedData->append("Length = " + QString("%1 ").arg(packet.length, 2, 16, QChar('0')).toUpper());
-    QString str;
-    for (int i = 0; i < 32; i++) {
-        str += QString("%1 ").arg(packet.data[i], 2, 16, QChar('0')).toUpper();
-    }
-    ui->tBrTransceivedData->append("Data = " + str);
-    ui->tBrTransceivedData->append("CRC = " + QString("%1 ").arg(packet.crc, 2, 16, QChar('0')).toUpper());
-    ui->tBrTransceivedData->append("----------------------");
+    const double scale_factor = static_cast<double>(4194300) / static_cast<double>(1ULL << 42); // 4,194,300 / 2^42
+    const double gain_factor = static_cast<double>(gain) / 4.0;
+    const double k = gain_factor * scale_factor;
+
+    double vin = ((static_cast<double>(data) / k) + static_cast<double>(offset)) * vref / (3.0 * static_cast<double>(1 << 21));
+
+    return static_cast<float>(vin);
 }
+
+void MainWindow::convertValueEegChannels(const QByteArray &channel1, const QByteArray &channel2)
+{
+    if (channel1.size() < 4 || channel2.size() < 4) {
+        ui->tBrTransceivedData->append("Dữ liệu không hợp lệ");
+        return;
+    }
+
+    // Convert channel1 (Two's Complement)
+    uint32_t raw1 = static_cast<uint8_t>(channel1.at(0)) |
+                    (static_cast<uint8_t>(channel1.at(1)) << 8) |
+                    (static_cast<uint8_t>(channel1.at(2)) << 16) |
+                    (static_cast<uint8_t>(channel1.at(3)) << 24);
+    int32_t value1 = static_cast<int32_t>(raw1); // Convert sang signed 32-bit
+
+    // Convert channel2 (Two's Complement)
+    uint32_t raw2 = static_cast<uint8_t>(channel2.at(0)) |
+                    (static_cast<uint8_t>(channel2.at(1)) << 8) |
+                    (static_cast<uint8_t>(channel2.at(2)) << 16) |
+                    (static_cast<uint8_t>(channel2.at(3)) << 24);
+    int32_t value2 = static_cast<int32_t>(raw2);
+
+    // // Chuyển sang điện áp (nếu muốn)
+    // float vref = 2.5f;    // Ref voltage
+    // int32_t gain = 0x555555; // Default factory gain
+    // int32_t offset = 0;      // Offset
+    // float voltage1 = convertADCtoVoltage_AD7768(value1, vref, gain, offset);
+    // float voltage2 = convertADCtoVoltage_AD7768(value2, vref, gain, offset);
+    float voltage1 = (float)value1;
+    float voltage2 = (float)value2;
+
+    // Thêm vào Plotter
+    rawEegChannel1->addDataToBuffer(voltage1);
+    rawEegChannel2->addDataToBuffer(voltage2);
+}
+

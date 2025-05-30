@@ -3,25 +3,21 @@
 
 #include <QThread>
 
-#pragma pack(1)  // Chống trình biên dịch tự động canh chỉnh bộ nhớ
-typedef struct
-{
-    uint8_t sop;
-    uint8_t length : 5;
-    uint8_t cmd : 3;
-    uint8_t data[32];
-    uint16_t crc;
-    uint16_t eop;
-} PacketTypeDef;
-#pragma pack()
-
 enum ParserState {
-    IDLE,
-    WAIT_CMD,
-    WAIT_DATA,
-    WAIT_CRC,
-    WAIT_END
+    IDLE = 0,
+    START_BYTE_DETECTION,
+    WAIT_SOP,
+    PACKET_DETECTION,
+    WAIT_VALID_CMD,
+    WAIT_VALID_LEN,
+    RECEIVE_PAYLOAD,
+    WAIT_END_BYTES,
+    INVALID_PACKET,
+    CONT_WAIT_END_BYTE,
+    WAIT_LAST_END_BYTE,
+    FINISHED_PACKET
 };
+
 
 class DataParser : public QThread
 {
@@ -35,7 +31,7 @@ public slots:
 
 signals:
     void receivedPacket(const QByteArray &data);
-    void parsedPacket(const PacketTypeDef &packet);
+    void valueOfEegChannels(const QByteArray &channel1, const QByteArray &channel2);
 
 protected:
     void run() override;
@@ -45,7 +41,8 @@ private:
 
 private:
     ParserState currentState;
-    PacketTypeDef currentPacket;
+    uint8_t eegChannel1[4];
+    uint8_t eegChannel2[4];
 };
 
 #endif // DATAPARSER_H

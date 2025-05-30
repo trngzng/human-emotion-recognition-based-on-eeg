@@ -291,6 +291,32 @@ color: rgb(0, 85, 0)</string>
      </widget>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="gBEegChannel1">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>-1</y>
+      <width>1101</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>EEG Channel 1</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="gBEegChannel2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>1101</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>EEG Channel 2</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

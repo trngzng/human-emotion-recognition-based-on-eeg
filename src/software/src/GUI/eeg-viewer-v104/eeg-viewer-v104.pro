@@ -1,4 +1,4 @@
-QT       += core gui network serialport
+QT       += core gui network serialport printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,15 +12,19 @@ INCLUDEPATH += $$PWD/inc/
 VPATH += src/
 
 SOURCES += \
-    main.cpp \
-    src/dataparser.cpp \
-    src/mainwindow.cpp \
-    src/serial.cpp
+    main.cpp            \
+    src/dataparser.cpp  \
+    src/mainwindow.cpp  \
+    src/plotter.cpp     \
+    src/serial.cpp      \
+    src/qcustomplot.cpp
 
 HEADERS += \
-    inc/dataparser.h \
-    inc/mainwindow.h \
-    inc/serial.h
+    inc/dataparser.h    \
+    inc/mainwindow.h    \
+    inc/plotter.h       \
+    inc/serial.h        \
+    inc/qcustomplot.h
 
 FORMS += \
     mainwindow.ui

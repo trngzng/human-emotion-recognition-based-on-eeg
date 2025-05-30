@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "inc/serial.h"
+#include "inc/plotter.h"
 #include "inc/dataparser.h"
 
 QT_BEGIN_NAMESPACE
@@ -21,7 +22,11 @@ public:
     ~MainWindow();
 
 public slots:
-    void fillParsedPackets(const PacketTypeDef &packet);
+    void convertValueEegChannels(const QByteArray &channel1, const QByteArray &channel2);
+
+signals:
+    void sendRawEegDataToPlot(int32_t channel1, int32_t channel2);
+    void sendFilteredEegDataToPlot(int32_t channel1, int32_t channel2);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -29,11 +34,16 @@ protected:
 private slots:
     void updateSerialDeviceList();
     void on_pBtnSerialConnect_clicked();
+    float convertADCtoVoltage_AD7768(int32_t data, float vref, int32_t gain, int32_t offset);
 
 private:
     Ui::MainWindow *ui;
     Serial serialDevice;
     DataParser dataParser;
+    Plotter *rawEegChannel1; // EEG Channel 1
+    Plotter *rawEegChannel2; // EEG Channel 2
+    Plotter *filteredEegChannel1; // EEG Channel 1
+    Plotter *filteredEegChannel2; // EEG Channel 2
 };
 
 
