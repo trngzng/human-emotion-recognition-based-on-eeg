@@ -32,27 +32,37 @@ MainWindow::MainWindow(QWidget *parent)
     }
     ui->cBSerialBaud->addItems(strBaudRates);
 
+    dataParser = new DataParser();
 
-    // ====== Thêm phần Plotter ======
     rawEegChannel1 = new Plotter(this);
     rawEegChannel2 = new Plotter(this);
+    filteredEegChannel1 = new Plotter(this);
+    filteredEegChannel2 = new Plotter(this);
 
-    // Gắn Plotter vào giao diện (GroupBox, Layout, hoặc Frame trong UI)
-    QVBoxLayout *layout1 = new QVBoxLayout(ui->gBEegChannel1);  // Giả sử gBEegChannel1 là GroupBox trong UI
+    QVBoxLayout *layout1 = new QVBoxLayout(ui->gBRawEegChannel1);
     layout1->addWidget(rawEegChannel1);
 
-    QVBoxLayout *layout2 = new QVBoxLayout(ui->gBEegChannel2);
+    QVBoxLayout *layout2 = new QVBoxLayout(ui->gBRawEegChannel2);
     layout2->addWidget(rawEegChannel2);
 
-    connect(&serialDevice, &Serial::receivedData, &dataParser, &DataParser::packetDectection, Qt::QueuedConnection);
-    connect(&dataParser, &DataParser::valueOfEegChannels, this, &MainWindow::convertValueEegChannels, Qt::QueuedConnection);
+    QVBoxLayout *layout3 = new QVBoxLayout(ui->gBFilteredEegChannel1);
+    layout3->addWidget(filteredEegChannel1);
+
+    QVBoxLayout *layout4 = new QVBoxLayout(ui->gBFilteredEegChannel2);
+    layout4->addWidget(filteredEegChannel2);
+
+    connect(&serialDevice, &Serial::receivedData, dataParser, &DataParser::packetDectection, Qt::QueuedConnection);
+    connect(dataParser, &DataParser::valueOfEegChannels, this, &MainWindow::convertValueEegChannels, Qt::QueuedConnection);
+
     // Timer chung update tất cả Plotter
     QTimer *updateTimer = new QTimer(this);
     connect(updateTimer, &QTimer::timeout, this, [=]() {
         rawEegChannel1->processBuffer();
         rawEegChannel2->processBuffer();
+        filteredEegChannel1->processBuffer();
+        filteredEegChannel2->processBuffer();
     });
-    updateTimer->start(20); // 50fps mượt mà
+    updateTimer->start(10); // 50fps mượt mà
 }
 
 MainWindow::~MainWindow()
@@ -172,14 +182,12 @@ void MainWindow::convertValueEegChannels(const QByteArray &channel1, const QByte
                     (static_cast<uint8_t>(channel2.at(3)) << 24);
     int32_t value2 = static_cast<int32_t>(raw2);
 
-    // // Chuyển sang điện áp (nếu muốn)
-    // float vref = 2.5f;    // Ref voltage
-    // int32_t gain = 0x555555; // Default factory gain
-    // int32_t offset = 0;      // Offset
-    // float voltage1 = convertADCtoVoltage_AD7768(value1, vref, gain, offset);
-    // float voltage2 = convertADCtoVoltage_AD7768(value2, vref, gain, offset);
-    float voltage1 = (float)value1;
-    float voltage2 = (float)value2;
+    // Chuyển sang điện áp (nếu muốn)
+    float vref = 2.5f;    // Ref voltage
+    int32_t gain = 0x555555; // Default factory gain
+    int32_t offset = 0;      // Offset
+    float voltage1 = convertADCtoVoltage_AD7768(value1, vref, gain, offset);
+    float voltage2 = convertADCtoVoltage_AD7768(value2, vref, gain, offset);
 
     // Thêm vào Plotter
     rawEegChannel1->addDataToBuffer(voltage1);

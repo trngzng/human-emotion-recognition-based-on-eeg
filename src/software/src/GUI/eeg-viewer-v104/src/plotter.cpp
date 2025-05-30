@@ -10,10 +10,9 @@ Plotter::Plotter(QWidget *parent) : QWidget(parent)
     graph = customPlot->addGraph();
     graph->setPen(QPen(Qt::blue));
 
-    customPlot->xAxis->setLabel("Sample");
-    customPlot->yAxis->setLabel("EEG Value");
+    customPlot->yAxis->setLabel("mV");
     customPlot->xAxis->setRange(0, maxSamples);
-    customPlot->yAxis->setRange(-5000, 5000);
+    customPlot->yAxis->setRange(-10, 10);
 
     xData.resize(maxSamples);
     yData.resize(maxSamples, qQNaN());

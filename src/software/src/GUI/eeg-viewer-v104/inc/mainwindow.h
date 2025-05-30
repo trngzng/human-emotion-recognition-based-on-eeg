@@ -39,7 +39,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Serial serialDevice;
-    DataParser dataParser;
+    DataParser *dataParser;
     Plotter *rawEegChannel1; // EEG Channel 1
     Plotter *rawEegChannel2; // EEG Channel 2
     Plotter *filteredEegChannel1; // EEG Channel 1

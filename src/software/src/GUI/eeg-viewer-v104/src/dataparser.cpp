@@ -6,18 +6,8 @@ const uint8_t startByte = 0x55;
 const uint8_t endByte = 0xAA;
 
 DataParser::DataParser(QObject *parent)
-    : QThread(parent)
+    : QObject(parent)
 {
-    connect(this, &DataParser::receivedPacket, this, &DataParser::packetParser);
-}
-
-DataParser::~DataParser()
-{
-    if (isRunning()) {
-        requestInterruption();
-        quit();
-        wait();
-    }
 }
 
 void DataParser::packetDectection(const QList<QByteArray> &inputData)
@@ -167,9 +157,4 @@ void DataParser::packetParser(const QByteArray &data)
     QByteArray eeg2(reinterpret_cast<const char*>(eegChannel2), 4);
 
     emit valueOfEegChannels(eeg1, eeg2);
-}
-
-void DataParser::run()
-{
-
 }

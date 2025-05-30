@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1120</width>
-    <height>650</height>
+    <width>1420</width>
+    <height>765</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>1120</width>
-    <height>650</height>
+    <height>200</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -45,10 +45,10 @@
    <widget class="QFrame" name="frSerialConnection">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>360</y>
-      <width>611</width>
-      <height>191</height>
+      <x>1130</x>
+      <y>0</y>
+      <width>281</width>
+      <height>171</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -62,8 +62,8 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>611</width>
-       <height>191</height>
+       <width>281</width>
+       <height>171</height>
       </rect>
      </property>
      <property name="maximumSize">
@@ -75,101 +75,13 @@
      <property name="title">
       <string>Serial</string>
      </property>
-     <widget class="QFrame" name="frSerialSend">
-      <property name="geometry">
-       <rect>
-        <x>180</x>
-        <y>30</y>
-        <width>421</width>
-        <height>151</height>
-       </rect>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Shape::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Shadow::Raised</enum>
-      </property>
-      <widget class="QWidget" name="verticalLayoutWidget_2">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>-1</y>
-         <width>421</width>
-         <height>151</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="vLoutSerialSend">
-        <item>
-         <layout class="QHBoxLayout" name="hLoutSerialSend1">
-          <property name="leftMargin">
-           <number>5</number>
-          </property>
-          <property name="rightMargin">
-           <number>5</number>
-          </property>
-          <item>
-           <widget class="QLineEdit" name="lnInputSend1"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pBtnInputSend1">
-            <property name="text">
-             <string>Send</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="hLoutSerialSend2">
-          <property name="leftMargin">
-           <number>5</number>
-          </property>
-          <property name="rightMargin">
-           <number>5</number>
-          </property>
-          <item>
-           <widget class="QLineEdit" name="lnInputSend2"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pBtnInputSend_2">
-            <property name="text">
-             <string>Send</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="hLoutSerialSend3">
-          <property name="leftMargin">
-           <number>5</number>
-          </property>
-          <property name="rightMargin">
-           <number>5</number>
-          </property>
-          <item>
-           <widget class="QLineEdit" name="lnInputSend_3"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pBtnInputSend3">
-            <property name="text">
-             <string>Send</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-     </widget>
      <widget class="QFrame" name="frSerialConnect">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>161</width>
-        <height>151</height>
+        <width>261</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -178,70 +90,94 @@
       <property name="frameShadow">
        <enum>QFrame::Shadow::Raised</enum>
       </property>
-      <widget class="QWidget" name="verticalLayoutWidget">
+      <widget class="QLabel" name="lblSerialName">
        <property name="geometry">
         <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>160</width>
-         <height>155</height>
+         <x>10</x>
+         <y>10</y>
+         <width>51</width>
+         <height>21</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="vLoutSerialConnect">
-        <property name="spacing">
-         <number>10</number>
-        </property>
-        <property name="leftMargin">
-         <number>5</number>
-        </property>
-        <property name="rightMargin">
-         <number>5</number>
-        </property>
-        <property name="bottomMargin">
-         <number>5</number>
-        </property>
-        <item>
-         <widget class="QLabel" name="lblSerialName">
-          <property name="text">
-           <string>Name</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cBSerialName"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblSerialBaud">
-          <property name="text">
-           <string>Baud</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cBSerialBaud"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pBtnSerialConnect">
-          <property name="font">
-           <font>
-            <family>Segoe UI</family>
-            <bold>true</bold>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(255, 255, 255);
+       <property name="font">
+        <font>
+         <family>Montserrat</family>
+         <pointsize>10</pointsize>
+         <bold>false</bold>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Port</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cBSerialName">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>10</y>
+         <width>201</width>
+         <height>23</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="lblSerialBaud">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>41</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Montserrat</family>
+         <pointsize>10</pointsize>
+         <bold>false</bold>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="text">
+        <string>Baud</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="cBSerialBaud">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>40</y>
+         <width>201</width>
+         <height>23</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pBtnSerialConnect">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>83</y>
+         <width>241</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Segoe UI</family>
+         <bold>true</bold>
+         <strikeout>false</strikeout>
+        </font>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(255, 255, 255);
 color: rgb(0, 85, 0)</string>
-          </property>
-          <property name="text">
-           <string>Connect</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       </property>
+       <property name="text">
+        <string>Connect</string>
+       </property>
       </widget>
      </widget>
     </widget>
@@ -249,10 +185,10 @@ color: rgb(0, 85, 0)</string>
    <widget class="QFrame" name="frTransceivedData">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>360</y>
-      <width>501</width>
-      <height>191</height>
+      <x>1130</x>
+      <y>190</y>
+      <width>281</width>
+      <height>391</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -264,22 +200,22 @@ color: rgb(0, 85, 0)</string>
     <widget class="QGroupBox" name="gBTransceivedData">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>0</x>
        <y>0</y>
-       <width>491</width>
-       <height>191</height>
+       <width>281</width>
+       <height>391</height>
       </rect>
      </property>
      <property name="title">
-      <string>Received/Sent Data</string>
+      <string/>
      </property>
      <widget class="QTextBrowser" name="tBrTransceivedData">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>20</y>
-        <width>471</width>
-        <height>161</height>
+        <y>10</y>
+        <width>261</width>
+        <height>371</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -291,30 +227,56 @@ color: rgb(0, 85, 0)</string>
      </widget>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="gBEegChannel1">
-    <property name="geometry">
-     <rect>
-      <x>9</x>
-      <y>-1</y>
-      <width>1101</width>
-      <height>171</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>EEG Channel 1</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="gBEegChannel2">
+   <widget class="QGroupBox" name="gBRawEegChannel2">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
-      <width>1101</width>
-      <height>191</height>
+      <y>360</y>
+      <width>541</width>
+      <height>351</height>
      </rect>
     </property>
     <property name="title">
-     <string>EEG Channel 2</string>
+     <string>Raw EEG Channel 2</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="gBFilteredEegChannel2">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>360</y>
+      <width>541</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Filtered EEG Channel 2</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="gBFilteredEegChannel1">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>0</y>
+      <width>541</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Filtered EEG Channel 1</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="gBRawEegChannel1">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>541</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Raw EEG Channel 1</string>
     </property>
    </widget>
   </widget>
@@ -323,7 +285,7 @@ color: rgb(0, 85, 0)</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1120</width>
+     <width>1420</width>
      <height>20</height>
     </rect>
    </property>

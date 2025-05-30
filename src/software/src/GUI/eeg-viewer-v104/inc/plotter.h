@@ -12,7 +12,7 @@ class Plotter : public QWidget
 public:
     explicit Plotter(QWidget *parent = nullptr);
     void addDataToBuffer(float value);
-    void processBuffer(); // Gọi từ MainWindow timer
+    void processBuffer();
 
     void setMaxSamples(int samples);
 
@@ -29,7 +29,7 @@ private:
     QVector<float> buffer;
     QMutex mutex;
 
-    int maxSamples = 5000;
+    int maxSamples = 2000;
     int writeIndex = 0;
 };
 
