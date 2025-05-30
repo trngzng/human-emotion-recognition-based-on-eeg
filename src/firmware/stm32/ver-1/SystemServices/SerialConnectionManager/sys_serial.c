@@ -49,9 +49,9 @@ typedef struct
 typedef struct __attribute__((packed))
 {
   uint8_t sop[3];
-  uint8_t length;
   uint8_t cmd;
-  uint8_t data[56];
+  uint8_t length;
+  uint8_t *buf;
   uint8_t eop[3];
 } SYS_SERIAL_PacketTypeDef;
 
@@ -63,10 +63,10 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 /* Private variables -------------------------------------------------- */
 static SYS_SERIAL_HandleTypeDef sSerial; /**< System serial instance */
 
-SYS_SERIAL_PacketTypeDef packetBuf = {{PACKET_SOP, PACKET_SOP, PACKET_SOP},
+static SYS_SERIAL_PacketTypeDef packetBuf = {{PACKET_SOP, PACKET_SOP, PACKET_SOP},
                                       SYS_SERIAL_CMD_DEVICE_MODE,
                                       0,
-                                      {0},
+                                      NULL,
                                       {PACKET_EOP, PACKET_EOP, PACKET_EOP}};
 
 /* Private function prototypes ---------------------------------------- */
@@ -85,17 +85,22 @@ BaseStatusTypeDef SYS_Serial_Init()
   return BS_OK;
 }
 
-BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *psample, uint8_t num)
+BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *sample, uint32_t size)
 {
   __ASSERT(sSerial.status == SYS_SERIAL_READY, BS_ERROR);
-  __ASSERT(psample != NULL, BS_ERROR);
-  __ASSERT(num > 0, BS_ERROR);
+  __ASSERT(sample != NULL, BS_ERROR);
+  __ASSERT(size > 0, BS_ERROR);
   uint8_t result;
 
-  memcpy(packetBuf.data, psample, num);
-  packetBuf.length = num;
+  uint8_t buf[64];
+  memset(buf, PACKET_SOP, 3);
+  buf[3] = SYS_SERIAL_CMD_DEVICE_MODE;
+  buf[4] = size;
+  memcpy(buf + 5, sample, size);
+  memset(buf + 5 + size, PACKET_EOP, 3);
 
-  result = CDC_Transmit_FS((uint8_t *)&packetBuf, sizeof(packetBuf));
+
+  result = CDC_Transmit_FS(buf, 8 + size);
 
   __ASSERT(result == 0, BS_ERROR);
 

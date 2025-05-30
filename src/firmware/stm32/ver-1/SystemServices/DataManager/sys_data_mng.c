@@ -127,21 +127,17 @@ BaseStatusTypeDef SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_IDTopicTypeDef id, uint8_
 
 BaseStatusTypeDef SYS_DATA_MNG_FireEvent()
 {
-  BaseStatusTypeDef ret = BS_ERROR;
   uint32_t size = 0;
-  uint8_t *msg = NULL;
 
   for (uint_fast8_t i = 0; i < sNumOfTopics; i++)
   {
     if ((CB_DataCount(&sTopicList[i].cbuf) / sTopicList[i].message_size) != 0)
     {
       size = sTopicList[i].message_size;
-      msg = sCbufReadBuffer;
-      ret = CB_ReadData(&sTopicList[i].cbuf, msg, size);
-      __ASSERT(ret == size, BS_ERROR);
+      CB_ReadData(&sTopicList[i].cbuf, sCbufReadBuffer, size);
       for (uint_fast8_t j = 0; j < sTopicList[i].num_of_subscribers; j++)
       {
-        sTopicList[i].cb_func[j](msg, size);
+        sTopicList[i].cb_func[j](sCbufReadBuffer, size);
       }
     }
   }

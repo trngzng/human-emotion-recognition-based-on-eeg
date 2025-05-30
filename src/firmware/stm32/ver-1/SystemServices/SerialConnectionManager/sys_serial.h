@@ -72,7 +72,7 @@ BaseStatusTypeDef SYS_Serial_Init();
  *  - SYS_SERIAL_READY: Success
  *  - else: Error
  */
-BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *psample, uint8_t num);
+BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *sample, uint32_t size);
 
 /**
  * @brief  Print samples on the terminal

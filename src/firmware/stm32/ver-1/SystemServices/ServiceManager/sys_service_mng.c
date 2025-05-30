@@ -42,17 +42,17 @@ BaseStatusTypeDef SYS_SERVICE_MNG_Init(void)
   ret = SYS_ACQ_MNG_Init();
   __ASSERT(ret == BS_OK, BS_ERROR);
 
-  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, 16, 5);
-__ASSERT(ret == BS_OK, BS_ERROR);
+  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL*4, 5);
+  __ASSERT(ret == BS_OK, BS_ERROR);
 
   ret = SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, SYS_ACQ_MNG_ProcessData);
   __ASSERT(ret == BS_OK, BS_ERROR);
 
-//  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL*SYS_ACQ_MNG_MAX_EEG_SAMPLES, 5);
-//  __ASSERT(ret == BS_OK, BS_ERROR);
-//
-//  ret = SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, SYS_Serial_SendSamples);
-//  __ASSERT(ret == BS_OK, BS_ERROR);
+  ret = SYS_DATA_MNG_CreateTopic(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, SYS_ACQ_MNG_NUM_OF_EEG_CHANNEL*4, 10);
+  __ASSERT(ret == BS_OK, BS_ERROR);
+
+  ret = SYS_DATA_MNG_SubscribeTopic(SYS_DATA_MNG_TOPIC_ACQ_SYS_TO_USB, SYS_Serial_SendSamples);
+  __ASSERT(ret == BS_OK, BS_ERROR);
 
   return BS_OK;
 }
