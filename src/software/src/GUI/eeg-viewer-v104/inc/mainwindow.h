@@ -38,7 +38,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Serial serialDevice;
+    Serial *serialDevice;
+    QThread *serialThread;
     DataParser *dataParser;
     Plotter *rawEegChannel1; // EEG Channel 1
     Plotter *rawEegChannel2; // EEG Channel 2

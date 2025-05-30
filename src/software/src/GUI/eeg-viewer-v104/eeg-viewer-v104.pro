@@ -14,6 +14,7 @@ VPATH += src/
 SOURCES += \
     main.cpp            \
     src/dataparser.cpp  \
+    src/filter.cpp      \
     src/mainwindow.cpp  \
     src/plotter.cpp     \
     src/serial.cpp      \
@@ -21,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     inc/dataparser.h    \
+    inc/filter.h        \
     inc/mainwindow.h    \
     inc/plotter.h       \
     inc/serial.h        \

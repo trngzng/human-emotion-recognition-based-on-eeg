@@ -12,8 +12,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->cBSerialName->installEventFilter(this);
 
+    serialDevice = new Serial();
+    serialThread = new QThread(this);
+    serialDevice->moveToThread(serialThread);
+    serialThread->start();
+
     /* List all available COM */
-    QList<QSerialPortInfo> ports = serialDevice.getAvailablePorts();
+    QList<QSerialPortInfo> ports = serialDevice->getAvailablePorts();
     QList<QString> strPorts;
     for (int i = 0; i < ports.size(); i++)
     {
@@ -24,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->cBSerialBaud->setEditable(true);
 
     /* List all baudrates supported */
-    QList<qint32> bauRates = serialDevice.getStandardBaudRates();
+    QList<qint32> bauRates = serialDevice->getStandardBaudRates();
     QList<QString> strBaudRates;
     for (int i = 0; i < bauRates.size(); i++)
     {
@@ -51,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVBoxLayout *layout4 = new QVBoxLayout(ui->gBFilteredEegChannel2);
     layout4->addWidget(filteredEegChannel2);
 
-    connect(&serialDevice, &Serial::receivedData, dataParser, &DataParser::packetDectection, Qt::QueuedConnection);
+    connect(serialDevice, &Serial::receivedData, dataParser, &DataParser::packetDectection, Qt::QueuedConnection);
     connect(dataParser, &DataParser::valueOfEegChannels, this, &MainWindow::convertValueEegChannels, Qt::QueuedConnection);
 
     // Timer chung update tất cả Plotter
@@ -67,6 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    serialThread->quit();
+    serialThread->wait();
     delete ui;
 }
 
@@ -74,7 +81,7 @@ void MainWindow::on_pBtnSerialConnect_clicked()
 {
     if (ui->pBtnSerialConnect->text() == "Connect")
     {
-        if(serialDevice.connect(QSerialPortInfo::availablePorts().at(ui->cBSerialName->currentIndex()).portName(), ui->cBSerialBaud->currentText().toUInt()))
+        if(serialDevice->connectPort(QSerialPortInfo::availablePorts().at(ui->cBSerialName->currentIndex()).portName(), ui->cBSerialBaud->currentText().toUInt()))
         {
             ui->pBtnSerialConnect->setText("Disconnect");
             ui->pBtnSerialConnect->setStyleSheet("QPushButton {color: rgb(170, 0, 0)}");
@@ -94,7 +101,7 @@ void MainWindow::on_pBtnSerialConnect_clicked()
     }
     else if ((ui->pBtnSerialConnect->text() == "Disconnect"))
     {
-        serialDevice.disconnect();
+        serialDevice->disconnectPort();
         ui->pBtnSerialConnect->setText("Connect");
         ui->pBtnSerialConnect->setStyleSheet("QPushButton {color: rgb(0, 85, 0)}");
         ui->cBSerialName->setDisabled(false);
@@ -111,7 +118,7 @@ void MainWindow::on_pBtnSerialConnect_clicked()
 
 void MainWindow::updateSerialDeviceList()
 {
-    QList<QSerialPortInfo> devices = serialDevice.getAvailablePorts();
+    QList<QSerialPortInfo> devices = serialDevice->getAvailablePorts();
     QStringList portNames;
     static QStringList portNamesOld;
 
