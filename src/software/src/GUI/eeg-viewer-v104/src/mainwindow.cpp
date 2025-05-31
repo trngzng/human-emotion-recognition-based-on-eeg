@@ -13,9 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->cBSerialName->installEventFilter(this);
 
     serialDevice = new Serial();
-    serialThread = new QThread(this);
-    serialDevice->moveToThread(serialThread);
-    serialThread->start();
+    // serialThread = new QThread(this);
+    // serialDevice->moveToThread(serialThread);
+    // serialThread->start();
+
+    notchFilterChannel1 = new Filter();
+    notchFilterChannel2 = new Filter();
+    lowPassFilterChannel1 = new Filter();
+    lowPassFilterChannel2 = new Filter();
 
     /* List all available COM */
     QList<QSerialPortInfo> ports = serialDevice->getAvailablePorts();
@@ -74,6 +79,8 @@ MainWindow::~MainWindow()
 {
     serialThread->quit();
     serialThread->wait();
+    delete serialDevice;
+    delete serialThread;
     delete ui;
 }
 
@@ -113,6 +120,13 @@ void MainWindow::on_pBtnSerialConnect_clicked()
         // === Clear dữ liệu Plotter ===
         rawEegChannel1->clearData();
         rawEegChannel2->clearData();
+        filteredEegChannel1->clearData();
+        filteredEegChannel2->clearData();
+
+        notchFilterChannel1->reset();
+        notchFilterChannel2->reset();
+        lowPassFilterChannel1->reset();
+        lowPassFilterChannel2->reset();
     }
 }
 
@@ -189,6 +203,7 @@ void MainWindow::convertValueEegChannels(const QByteArray &channel1, const QByte
                     (static_cast<uint8_t>(channel2.at(3)) << 24);
     int32_t value2 = static_cast<int32_t>(raw2);
 
+
     // Chuyển sang điện áp (nếu muốn)
     float vref = 2.5f;    // Ref voltage
     int32_t gain = 0x555555; // Default factory gain
@@ -196,8 +211,33 @@ void MainWindow::convertValueEegChannels(const QByteArray &channel1, const QByte
     float voltage1 = convertADCtoVoltage_AD7768(value1, vref, gain, offset);
     float voltage2 = convertADCtoVoltage_AD7768(value2, vref, gain, offset);
 
+    /*
+    static int n = 0;
+    float voltage1 = 5*sin(2.0f * M_PI * 500 * n / 1000)
+                     + 4*sin(2.0f * M_PI * 200 * n / 1000)
+                     + 3*sin(2.0f * M_PI * 150 * n / 1000)
+                     + 3*sin(2.0f * M_PI * 50 * n / 1000)
+                     + 3*sin(2.0f * M_PI * 5 * n / 1000);
+
+    float voltage2 = 5*sin(2.0f * M_PI * 500 * n / 1000)
+                     + 4*sin(2.0f * M_PI * 200 * n / 1000)
+                     + 3*sin(2.0f * M_PI * 150 * n / 1000)
+                     + 3*sin(2.0f * M_PI * 50 * n / 1000)
+                     + 3*sin(2.0f * M_PI * 5 * n / 1000);
+    n++;
+    */
+
+    float temp1 = notchFilterChannel1->applyFilter(FilterType::Notch, voltage1);
+    float temp2 = notchFilterChannel2->applyFilter(FilterType::Notch, voltage2);
+
+    float fVoltage1 = lowPassFilterChannel1->applyFilter(FilterType::LowPass, temp1);
+    float fVoltage2 = lowPassFilterChannel2->applyFilter(FilterType::LowPass, temp2);
+
+
     // Thêm vào Plotter
     rawEegChannel1->addDataToBuffer(voltage1);
     rawEegChannel2->addDataToBuffer(voltage2);
+    filteredEegChannel1->addDataToBuffer(fVoltage1);
+    filteredEegChannel2->addDataToBuffer(fVoltage2);
 }
 

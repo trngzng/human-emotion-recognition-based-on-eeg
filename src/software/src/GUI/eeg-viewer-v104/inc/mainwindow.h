@@ -6,6 +6,7 @@
 #include "inc/serial.h"
 #include "inc/plotter.h"
 #include "inc/dataparser.h"
+#include "inc/filter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -41,6 +42,10 @@ private:
     Serial *serialDevice;
     QThread *serialThread;
     DataParser *dataParser;
+    Filter *notchFilterChannel1;
+    Filter *notchFilterChannel2;
+    Filter *lowPassFilterChannel1;
+    Filter *lowPassFilterChannel2;
     Plotter *rawEegChannel1; // EEG Channel 1
     Plotter *rawEegChannel2; // EEG Channel 2
     Plotter *filteredEegChannel1; // EEG Channel 1

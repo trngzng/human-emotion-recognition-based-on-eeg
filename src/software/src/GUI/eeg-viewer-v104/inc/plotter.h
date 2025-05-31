@@ -29,7 +29,7 @@ private:
     QVector<float> buffer;
     QMutex mutex;
 
-    int maxSamples = 2000;
+    int maxSamples = 1000;
     int writeIndex = 0;
 };
 

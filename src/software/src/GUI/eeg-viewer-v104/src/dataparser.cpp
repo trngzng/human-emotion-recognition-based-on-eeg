@@ -149,8 +149,8 @@ void DataParser::packetParser(const QByteArray &data)
 {
     for (int i = 0; i < 4; i++)
     {
-        eegChannel1[i] = static_cast<uint8_t>(data[5 + i]);
-        eegChannel2[i] = static_cast<uint8_t>(data[9 + i]);
+        eegChannel2[i] = static_cast<uint8_t>(data[5 + i]);
+        eegChannel1[i] = static_cast<uint8_t>(data[9 + i]);
     }
 
     QByteArray eeg1(reinterpret_cast<const char*>(eegChannel1), 4);
