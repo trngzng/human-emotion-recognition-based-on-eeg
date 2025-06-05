@@ -41,7 +41,8 @@ typedef enum
  */
 typedef enum
 {
-  SYS_SERIAL_CMD_DEVICE_MODE   = 0x00U,   /**< Select mode for device */
+  DEVICE_SEND_RAW_SAMPLES   = 0,   /**< Select mode for device */
+  DEVICE_SEND_FILTERED_SAMPLES,   /**< Select mode for device */
 } SYS_SERIAL_CommandTypeDef;
 
 /* Public macros ------------------------------------------------------ */
@@ -63,7 +64,7 @@ BaseStatusTypeDef SYS_Serial_Init();
 /**
  * @brief  Send samples to GUI via USB
  *
- * @param[in]     psample       Pointer to samples' array
+ * @param[in]     sample        Pointer to raw samples' array
  * @param[in]     num           Length of data
  *
  * @attention  Must initialize the USB device libraries before use
@@ -72,12 +73,12 @@ BaseStatusTypeDef SYS_Serial_Init();
  *  - SYS_SERIAL_READY: Success
  *  - else: Error
  */
-BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *sample, uint32_t size);
+BaseStatusTypeDef SYS_Serial_SendRawSamples(uint8_t *sample, uint32_t size);
 
 /**
- * @brief  Print samples on the terminal
+ * @brief  Send samples to GUI via USB
  *
- * @param[in]     psample       Pointer to samples' array
+ * @param[in]     sample        Pointer to filtered samples' array
  * @param[in]     num           Length of data
  *
  * @attention  Must initialize the USB device libraries before use
@@ -86,7 +87,7 @@ BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *sample, uint32_t size);
  *  - SYS_SERIAL_READY: Success
  *  - else: Error
  */
-BaseStatusTypeDef SYS_Serial_PrintSamples(uint8_t *psamples, uint8_t num);
+BaseStatusTypeDef SYS_Serial_SendFilteredSamples(uint8_t *sample, uint32_t size);
 
 #endif // __SYS_SERIAL_H
 
