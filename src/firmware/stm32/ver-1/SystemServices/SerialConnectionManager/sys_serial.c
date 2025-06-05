@@ -49,6 +49,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 
 /* Private variables -------------------------------------------------- */
 static SYS_SERIAL_HandleTypeDef sSerial; /**< System serial instance */
+static uint8_t packetBuf[PACKET_MAX_LEN];
 
 /* Private function prototypes ---------------------------------------- */
 
@@ -87,10 +88,28 @@ BaseStatusTypeDef SYS_Serial_SendRawSamples(uint8_t *sample, uint32_t size)
   __ASSERT(size > 0, BS_ERROR);
   uint8_t result;
 
-  uint8_t buf[PACKET_MAX_LEN];
-  uint16_t len = BuildPacket(buf, SYS_SERIAL_CMD_DEVICE_MODE, sample, size);
+  sSerial.status = SYS_SERIAL_BUSY;
+  uint16_t len = BuildPacket(packetBuf, DEVICE_SEND_RAW_SAMPLES, sample, size);
 
-  result = CDC_Transmit_FS(buf, len);
+  result = CDC_Transmit_FS(packetBuf, len);
+  sSerial.status = SYS_SERIAL_READY;
+
+  __ASSERT(result == 0, BS_ERROR);
+
+
+  return BS_OK;
+}
+
+BaseStatusTypeDef SYS_Serial_SendFilteredSamples(uint8_t *sample, uint32_t size)
+{
+  __ASSERT(sSerial.status == SYS_SERIAL_READY, BS_ERROR);
+  __ASSERT(sample != NULL, BS_ERROR);
+  __ASSERT(size > 0, BS_ERROR);
+  uint8_t result;
+
+  uint16_t len = BuildPacket(packetBuf, DEVICE_SEND_FILTERED_SAMPLES, sample, size);
+
+  result = CDC_Transmit_FS(packetBuf, len);
 
   __ASSERT(result == 0, BS_ERROR);
 
