@@ -19,8 +19,14 @@
 #include "bsp_dwt.h"
 
 /* Private defines ---------------------------------------------------- */
-#define PACKET_SOP  (0x55U)
-#define PACKET_EOP  (0xAAU)
+#define PACKET_SOP      (0x55U)
+#define PACKET_EOP      (0xAAU)
+#define SOP_LEN         (3)
+#define EOP_LEN         (3)
+#define CMD_LEN         (1)
+#define LENGTH_LEN      (1)
+#define PAYLOAD_MAX_LEN (255)
+#define PACKET_MAX_LEN  (SOP_LEN + CMD_LEN + LENGTH_LEN + PAYLOAD_MAX_LEN + EOP_LEN)
 
 /* Private enumerate/structure ---------------------------------------- */
 
@@ -36,25 +42,6 @@ typedef struct
 } SYS_SERIAL_HandleTypeDef;
 
 
-/**
- * Packet format:
- * .----------------.---------.-------------------.------------------.--------.----------------.
- * |Start of Packet | Command | Length (in Bytes) |       Data       |  CRC   |  End of Packet |
- * :----------------+---------+-------------------+------------------+--------+----------------:
- * |      0xAA      |  3-bit  |  5-bit (max 32)   | (1 - 32) x 8-bit | 16-bit |     0x5555     |
- * '----------------'---------'-------------------'------------------'--------'----------------'
- * Packet length (max): 37 bytes
- * Note Length field value = 0 means Data field has 1 byte.
-**/
-typedef struct __attribute__((packed))
-{
-  uint8_t sop[3];
-  uint8_t cmd;
-  uint8_t length;
-  uint8_t *buf;
-  uint8_t eop[3];
-} SYS_SERIAL_PacketTypeDef;
-
 /* Private macros ----------------------------------------------------- */
 
 /* Public variables --------------------------------------------------- */
@@ -63,13 +50,21 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 /* Private variables -------------------------------------------------- */
 static SYS_SERIAL_HandleTypeDef sSerial; /**< System serial instance */
 
-static SYS_SERIAL_PacketTypeDef packetBuf = {{PACKET_SOP, PACKET_SOP, PACKET_SOP},
-                                      SYS_SERIAL_CMD_DEVICE_MODE,
-                                      0,
-                                      NULL,
-                                      {PACKET_EOP, PACKET_EOP, PACKET_EOP}};
-
 /* Private function prototypes ---------------------------------------- */
+
+/**
+ * @brief  Initialize system acquisition manager
+ *
+ * @param[in]     <param_name>  <param_despcription>
+ * @param[out]    <param_name>  <param_despcription>
+ * @param[inout]  <param_name>  <param_despcription>
+ *
+ * @attention  <API attention note>
+ *
+ * @return
+ *  - Actual length of the output packet (in byte).
+ */
+uint16_t BuildPacket(uint8_t *packet, SYS_SERIAL_CommandTypeDef type, const uint8_t *payload, uint8_t len);
 
 /* Function definitions ----------------------------------------------- */
 BaseStatusTypeDef SYS_Serial_Init()
@@ -85,52 +80,46 @@ BaseStatusTypeDef SYS_Serial_Init()
   return BS_OK;
 }
 
-BaseStatusTypeDef SYS_Serial_SendSamples(uint8_t *sample, uint32_t size)
+BaseStatusTypeDef SYS_Serial_SendRawSamples(uint8_t *sample, uint32_t size)
 {
   __ASSERT(sSerial.status == SYS_SERIAL_READY, BS_ERROR);
   __ASSERT(sample != NULL, BS_ERROR);
   __ASSERT(size > 0, BS_ERROR);
   uint8_t result;
 
-  uint8_t buf[64];
-  memset(buf, PACKET_SOP, 3);
-  buf[3] = SYS_SERIAL_CMD_DEVICE_MODE;
-  buf[4] = size;
-  memcpy(buf + 5, sample, size);
-  memset(buf + 5 + size, PACKET_EOP, 3);
+  uint8_t buf[PACKET_MAX_LEN];
+  uint16_t len = BuildPacket(buf, SYS_SERIAL_CMD_DEVICE_MODE, sample, size);
 
-
-  result = CDC_Transmit_FS(buf, 8 + size);
+  result = CDC_Transmit_FS(buf, len);
 
   __ASSERT(result == 0, BS_ERROR);
 
   return BS_OK;
 }
 
-BaseStatusTypeDef SYS_Serial_PrintSamples(uint8_t *data, uint8_t num)
-{
-  __ASSERT(sSerial.status == SYS_SERIAL_READY, BS_ERROR);
-  __ASSERT(data != NULL, BS_ERROR);
-  __ASSERT(num > 0, BS_ERROR);
-
-  // Ép kiểu con trỏ sang int32_t*
-  int32_t *samples = (int32_t *)data;
-
-  char msg[256];
-  uint16_t pos = 0;
-
-  // Timestamp
-  float t_us = BSP_DWT_CyclesToUs(BSP_DWT_GetCycles());
-  int n = snprintf(msg, sizeof(msg), "TS: %.2f us | ", t_us);
-  pos += n;
-  // Gửi USB
-  printf("%s", msg);
-
-  return BS_OK;
-}
-
-
-
 /* Private definitions ----------------------------------------------- */
+uint16_t BuildPacket(uint8_t *packet, SYS_SERIAL_CommandTypeDef type, const uint8_t *payload, uint8_t len)
+{
+  __ASSERT(packet != NULL, 0xFFFF);
+  __ASSERT(payload != NULL, 0xFFFF);
+  __ASSERT(len <= 0xFF, 0xFFFF);
+
+/**
+ * Packet format:
+ * .----------------.---------.-------------------.------------------.----------------.
+ * |Start of Packet | Command | Length (in Bytes) |       Data       |  End of Packet |
+ * :----------------+---------+-------------------+------------------+----------------:
+ * |    0x555555    |  1-byte |      1-byte       |    0-255 Bytes   |    0xAAAAAA    |
+ * '----------------'---------'-------------------'------------------'----------------'
+**/
+
+  memset(packet, PACKET_SOP, SOP_LEN);
+  packet[SOP_LEN] = type;
+  packet[SOP_LEN + CMD_LEN] = len;
+  memcpy(packet + SOP_LEN + CMD_LEN + LENGTH_LEN, payload, len);
+  memset(packet + SOP_LEN + CMD_LEN + LENGTH_LEN + len, PACKET_EOP, EOP_LEN);
+
+  return SOP_LEN + CMD_LEN + LENGTH_LEN + len + EOP_LEN;
+}
 
 /* End of file -------------------------------------------------------- */
