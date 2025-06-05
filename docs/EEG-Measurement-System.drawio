@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="2">
     <diagram name="Hardware" id="EG-IcXwEWkJPikqICZwr">
-        <mxGraphModel dx="2250" dy="2850" grid="0" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1125" dy="2025" grid="0" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -2362,17 +2362,17 @@
                         <mxPoint x="-7" y="2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeColor=light-dark(#ff0000, #ff0000);strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="10" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeColor=light-dark(#ff0000, #ff0000);strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="642.51" y="-560" width="870" height="230" as="geometry"/>
                 </mxCell>
-                <mxCell id="11" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeColor=light-dark(#ff0000, #ff0000);strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="11" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;strokeColor=light-dark(#ff0000, #ff0000);strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="1570" y="-490" width="270" height="160" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="GC-iTMcQaS3zDg8vhUo3" name="Firmware">
-        <mxGraphModel dx="2045" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1125" dy="825" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -2502,81 +2502,81 @@
         </mxGraphModel>
     </diagram>
     <diagram id="s1zhQ8e6n-GChnz98mKq" name="Software">
-        <mxGraphModel dx="924" dy="1371" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="725" dy="1225" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-42" style="edgeStyle=orthogonalEdgeStyle;html=1;curved=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="D4n3aKsV17OpLJzhoUjl-15" target="D4n3aKsV17OpLJzhoUjl-17">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-42" style="edgeStyle=orthogonalEdgeStyle;html=1;curved=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="D4n3aKsV17OpLJzhoUjl-15" target="D4n3aKsV17OpLJzhoUjl-17" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="910" y="-360" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-43" value="&lt;i&gt;Valid Packets&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" vertex="1" connectable="0" parent="D4n3aKsV17OpLJzhoUjl-42">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-43" value="&lt;i&gt;Valid Packets&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" parent="D4n3aKsV17OpLJzhoUjl-42" vertex="1" connectable="0">
                     <mxGeometry x="-0.1049" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-15" value="&lt;b&gt;Serial Manager&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-15" value="&lt;b&gt;Serial Manager&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="600" y="-390" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" target="D4n3aKsV17OpLJzhoUjl-19">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" target="D4n3aKsV17OpLJzhoUjl-19" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1000" y="-375" as="sourcePoint"/>
                         <mxPoint x="1160" y="-375" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-52" style="edgeStyle=none;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="D4n3aKsV17OpLJzhoUjl-17" target="D4n3aKsV17OpLJzhoUjl-19">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-52" style="edgeStyle=none;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="1" source="D4n3aKsV17OpLJzhoUjl-17" target="D4n3aKsV17OpLJzhoUjl-19" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-53" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; font-style: italic;&quot;&gt;ADC Conversion Data Channel 1&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="D4n3aKsV17OpLJzhoUjl-52">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-53" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; font-style: italic;&quot;&gt;ADC Conversion Data Channel 1&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="D4n3aKsV17OpLJzhoUjl-52" vertex="1" connectable="0">
                     <mxGeometry x="-0.04" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-17" value="&lt;b&gt;Packet Parser&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-17" value="&lt;b&gt;Packet Parser&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="840" y="-390" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-19" value="&lt;b&gt;Convert to Voltage and Apply Filters&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-19" value="&lt;b&gt;Convert to Voltage and Apply Filters&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="1200" y="-390" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-21" value="&lt;b&gt;Graph Plotter&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-21" value="&lt;b&gt;Graph Plotter&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="1520" y="-390" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-45" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="D4n3aKsV17OpLJzhoUjl-26" target="D4n3aKsV17OpLJzhoUjl-15">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-45" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="D4n3aKsV17OpLJzhoUjl-26" target="D4n3aKsV17OpLJzhoUjl-15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-26" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;COM Port&lt;/b&gt;&lt;/span&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-26" value="&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;COM Port&lt;/b&gt;&lt;/span&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="500" y="-375" width="80" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-48" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-48" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1320" y="-375" as="sourcePoint"/>
                         <mxPoint x="1520" y="-375" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-49" value="EEG Amplitude Channel 1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" vertex="1" connectable="0" parent="D4n3aKsV17OpLJzhoUjl-48">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-49" value="EEG Amplitude Channel 1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" parent="D4n3aKsV17OpLJzhoUjl-48" vertex="1" connectable="0">
                     <mxGeometry x="-0.019" y="2" relative="1" as="geometry">
                         <mxPoint y="2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-50" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-50" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1320" y="-345" as="sourcePoint"/>
                         <mxPoint x="1520" y="-345" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-51" value="EEG Amplitude Channel 2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" vertex="1" connectable="0" parent="D4n3aKsV17OpLJzhoUjl-50">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-51" value="EEG Amplitude Channel 2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" parent="D4n3aKsV17OpLJzhoUjl-50" vertex="1" connectable="0">
                     <mxGeometry x="-0.019" y="2" relative="1" as="geometry">
                         <mxPoint y="2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-54" style="edgeStyle=none;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-54" style="edgeStyle=none;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="960" y="-345" as="sourcePoint"/>
                         <mxPoint x="1200" y="-345" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="D4n3aKsV17OpLJzhoUjl-55" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; font-style: italic;&quot;&gt;ADC Conversion Data Channel 2&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="D4n3aKsV17OpLJzhoUjl-54">
+                <mxCell id="D4n3aKsV17OpLJzhoUjl-55" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; font-style: italic;&quot;&gt;ADC Conversion Data Channel 2&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="D4n3aKsV17OpLJzhoUjl-54" vertex="1" connectable="0">
                     <mxGeometry x="-0.04" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
@@ -2585,68 +2585,68 @@
         </mxGraphModel>
     </diagram>
     <diagram id="CPY4Hm6J8xSpslr2Vkpo" name="System Diagram">
-        <mxGraphModel dx="136" dy="793" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="725" dy="1225" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-20" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="dimXE8FsePbZj9zb4JVr-3" target="dimXE8FsePbZj9zb4JVr-7">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-20" value="" style="edgeStyle=none;html=1;" parent="1" source="dimXE8FsePbZj9zb4JVr-3" target="dimXE8FsePbZj9zb4JVr-7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-3" value="&lt;b&gt;EEG Meassurement Circuit&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-3" value="&lt;b&gt;EEG Meassurement Circuit&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffff88;strokeColor=#36393d;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="600" y="-400" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" target="dimXE8FsePbZj9zb4JVr-8">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" target="dimXE8FsePbZj9zb4JVr-8" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1000" y="-375" as="sourcePoint"/>
                         <mxPoint x="1160" y="-375" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-21" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="dimXE8FsePbZj9zb4JVr-7" target="dimXE8FsePbZj9zb4JVr-19">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-21" value="" style="edgeStyle=none;html=1;" parent="1" source="dimXE8FsePbZj9zb4JVr-7" target="dimXE8FsePbZj9zb4JVr-19" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-7" value="&lt;b&gt;Digital Signal Processing&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-7" value="&lt;b&gt;Digital Signal Processing&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="600" y="-280" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-8" value="&lt;b&gt;Convert to Voltage and Apply Filters&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-8" value="&lt;b&gt;Convert to Voltage and Apply Filters&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="1200" y="-390" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-9" value="&lt;b&gt;Graph Plotter&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-9" value="&lt;b&gt;Graph Plotter&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="1520" y="-390" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1320" y="-375" as="sourcePoint"/>
                         <mxPoint x="1520" y="-375" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-13" value="EEG Amplitude Channel 1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" vertex="1" connectable="0" parent="dimXE8FsePbZj9zb4JVr-12">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-13" value="EEG Amplitude Channel 1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" parent="dimXE8FsePbZj9zb4JVr-12" vertex="1" connectable="0">
                     <mxGeometry x="-0.019" y="2" relative="1" as="geometry">
                         <mxPoint y="2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="1320" y="-345" as="sourcePoint"/>
                         <mxPoint x="1520" y="-345" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-15" value="EEG Amplitude Channel 2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" vertex="1" connectable="0" parent="dimXE8FsePbZj9zb4JVr-14">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-15" value="EEG Amplitude Channel 2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=2;fontSize=14;" parent="dimXE8FsePbZj9zb4JVr-14" vertex="1" connectable="0">
                     <mxGeometry x="-0.019" y="2" relative="1" as="geometry">
                         <mxPoint y="2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-16" style="edgeStyle=none;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-16" style="edgeStyle=none;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="960" y="-345" as="sourcePoint"/>
                         <mxPoint x="1200" y="-345" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-17" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; font-style: italic;&quot;&gt;ADC Conversion Data Channel 2&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="dimXE8FsePbZj9zb4JVr-16">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-17" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-size: 14px; font-style: italic;&quot;&gt;ADC Conversion Data Channel 2&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="dimXE8FsePbZj9zb4JVr-16" vertex="1" connectable="0">
                     <mxGeometry x="-0.04" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="dimXE8FsePbZj9zb4JVr-19" value="&lt;b&gt;Visualization&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" vertex="1" parent="1">
+                <mxCell id="dimXE8FsePbZj9zb4JVr-19" value="&lt;b&gt;Visualization&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;" parent="1" vertex="1">
                     <mxGeometry x="600" y="-160" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
