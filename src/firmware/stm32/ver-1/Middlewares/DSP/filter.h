@@ -17,7 +17,8 @@
 #define __FILTER_H
 
 /* Includes ----------------------------------------------------------- */
-#include "stdbool.h"
+#include <stdbool.h>
+#include <stdint.h>
 /* Public defines ----------------------------------------------------- */
 
 /* Public enumerate/structure ----------------------------------------- */
@@ -43,8 +44,6 @@ typedef struct
   uint32_t cutoff_freq; /**< Cutoff frequency of the filter */
   const float *numerator; /**< Description of member_1 */
   const float *denominator;
-  float *x;
-  float *y;
   bool active; /**< Indicates if the filter is active */
 } FilterHandleTypeDef;
 
@@ -63,8 +62,6 @@ typedef struct
  * @param[in]   cutoff_freq Cutoff frequency of the filter
  * @param[in]   den         Pointer to the denominator coefficients
  * @param[in]   num         Pointer to the numerator coefficients
- * @param[in]   input_buf   Pointer to the input buffer for the filter
- * @param[in]   output_buf  Pointer to the output buffer for the filter
  *
  * @attention  <API attention note>
  *
@@ -77,9 +74,7 @@ void FILTER_Init(FilterHandleTypeDef *h,
                 uint32_t sampling_rate, 
                 uint32_t fc, 
                 const float *den, 
-                const float *num, 
-                float *input_buf, 
-                float *output_buf);
+                const float *num);
 
 /**
  * @brief  Initialize the filter specifications
