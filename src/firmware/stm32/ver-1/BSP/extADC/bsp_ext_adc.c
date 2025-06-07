@@ -21,6 +21,7 @@
 #include "sys_data_mng.h"
 #include "main.h"
 #include <string.h>
+#include "filter.h"
 
 /* Private defines ---------------------------------------------------- */
 
@@ -52,9 +53,12 @@ static DRV_AD7768_HandleTypeDef uExtADC; /**< The external ADC stucture */
 static uint8_t uRxBuffer[RECEIVED_FRAME_LENGTH] = {0}; /**< The buffer to store the samples from the ADC */
 
 static BSP_EXT_ADC_ConversionOutputFormatTypeDef uRxData[4] = {0}; /**< The buffer to store the ADC conversion data from the ADC */
-static uint32_t uRawSamples[2] = {0}; /**< The buffer to store the raw samples from the ADC */
+static float uRawSamples[2] = {0}; /**< The buffer to store the raw samples from the ADC */
+
 
 /* Private function prototypes ---------------------------------------- */
+
+float ConvertADCValuetoVoltage(int32_t data, float vref, int32_t gain, int32_t offset);
 
 /* Function definitions ----------------------------------------------- */
 BaseStatusTypeDef BSP_EXT_ADC_Init(void)
@@ -96,6 +100,7 @@ BaseStatusTypeDef BSP_EXT_ADC_StopReceivingADCConversionData(void)
 BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
 {
   __ASSERT(uExtADC.active == BS_TRUE, BS_ERROR);
+  int32_t tmp;
 
   for (uint_fast8_t i = 0; i < 4; i++)
   {
@@ -106,16 +111,29 @@ BaseStatusTypeDef BSP_EXT_ADC_ParseADCConversionData(void)
 
     if (i < 2)
     {
-      uRawSamples[i] = (uRxData[i].data[0] << 16) | (uRxData[i].data[1] << 8) | uRxData[i].data[2];
+      tmp = (int32_t)((uRxData[i].data[0] << 24) | (uRxData[i].data[1] << 16) | uRxData[i].data[2] << 8) >> 8;
+      uRawSamples[i] = ConvertADCValuetoVoltage(tmp, 5.0, 0x555555, 0.0);
     }
   }
 
     // Send 24-bit sample N of 4 channels
   SYS_DATA_MNG_PublishMsg(SYS_DATA_MNG_TOPIC_ADC_TO_ACQ_SYS, (uint8_t *)uRawSamples, sizeof(uRawSamples));
 
+
   return BS_OK;
 }
 
 /* Private definitions ------------------------------------------------ */
+
+float ConvertADCValuetoVoltage(int32_t data, float vref, int32_t gain, int32_t offset)
+{
+  const double scale_factor = (double)4194300 / (double)(1ULL << 42); // 4,194,300 / 2^42
+  const double gain_factor = (double)gain / 4.0;
+  const double k = gain_factor * scale_factor;
+
+  double vin = (((double)data / k) + (double)(offset)) * vref / (3.0 * (double)(1UL << 21));
+
+  return (float)vin;
+}
 
 /* End of file -------------------------------------------------------- */
