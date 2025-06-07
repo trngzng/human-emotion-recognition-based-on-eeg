@@ -12,7 +12,7 @@ Plotter::Plotter(QWidget *parent) : QWidget(parent)
 
     customPlot->yAxis->setLabel("mV");
     customPlot->xAxis->setRange(0, maxSamples);
-    customPlot->yAxis->setRange(-10, 10);
+    customPlot->yAxis->setRange(-2500, 2500);
 
     xData.resize(maxSamples);
     yData.resize(maxSamples, qQNaN());

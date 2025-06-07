@@ -23,7 +23,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void convertValueEegChannels(const QByteArray &channel1, const QByteArray &channel2);
+    void convertValueEegChannels(const float &channel1, const float &channel2);
 
 signals:
     void sendRawEegDataToPlot(int32_t channel1, int32_t channel2);

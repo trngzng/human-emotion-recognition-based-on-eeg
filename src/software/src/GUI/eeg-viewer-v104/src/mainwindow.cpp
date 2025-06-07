@@ -182,61 +182,25 @@ float MainWindow::convertADCtoVoltage_AD7768(int32_t data, float vref, int32_t g
     return static_cast<float>(vin);
 }
 
-void MainWindow::convertValueEegChannels(const QByteArray &channel1, const QByteArray &channel2)
+void MainWindow::convertValueEegChannels(const float &channel1, const float &channel2)
 {
-    if (channel1.size() < 4 || channel2.size() < 4) {
-        ui->tBrTransceivedData->append("Dữ liệu không hợp lệ");
-        return;
-    }
+    // // Chuyển sang điện áp (nếu muốn)
+    // float vref = 2.5f;    // Ref voltage
+    // int32_t gain = 0x555555; // Default factory gain
+    // int32_t offset = 0;      // Offset
+    // float voltage1 = convertADCtoVoltage_AD7768(raw1, vref, gain, offset);
+    // float voltage2 = convertADCtoVoltage_AD7768(raw2, vref, gain, offset);
 
-    // Convert channel1 (Two's Complement)
-    uint32_t raw1 = static_cast<uint8_t>(channel1.at(0)) |
-                    (static_cast<uint8_t>(channel1.at(1)) << 8) |
-                    (static_cast<uint8_t>(channel1.at(2)) << 16) |
-                    (static_cast<uint8_t>(channel1.at(3)) << 24);
-    int32_t value1 = static_cast<int32_t>(raw1); // Convert sang signed 32-bit
-
-    // Convert channel2 (Two's Complement)
-    uint32_t raw2 = static_cast<uint8_t>(channel2.at(0)) |
-                    (static_cast<uint8_t>(channel2.at(1)) << 8) |
-                    (static_cast<uint8_t>(channel2.at(2)) << 16) |
-                    (static_cast<uint8_t>(channel2.at(3)) << 24);
-    int32_t value2 = static_cast<int32_t>(raw2);
-
-
-    // Chuyển sang điện áp (nếu muốn)
-    float vref = 2.5f;    // Ref voltage
-    int32_t gain = 0x555555; // Default factory gain
-    int32_t offset = 0;      // Offset
-    float voltage1 = convertADCtoVoltage_AD7768(value1, vref, gain, offset);
-    float voltage2 = convertADCtoVoltage_AD7768(value2, vref, gain, offset);
-
-    /*
-    static int n = 0;
-    float voltage1 = 5*sin(2.0f * M_PI * 500 * n / 1000)
-                     + 4*sin(2.0f * M_PI * 200 * n / 1000)
-                     + 3*sin(2.0f * M_PI * 150 * n / 1000)
-                     + 3*sin(2.0f * M_PI * 50 * n / 1000)
-                     + 3*sin(2.0f * M_PI * 5 * n / 1000);
-
-    float voltage2 = 5*sin(2.0f * M_PI * 500 * n / 1000)
-                     + 4*sin(2.0f * M_PI * 200 * n / 1000)
-                     + 3*sin(2.0f * M_PI * 150 * n / 1000)
-                     + 3*sin(2.0f * M_PI * 50 * n / 1000)
-                     + 3*sin(2.0f * M_PI * 5 * n / 1000);
-    n++;
-    */
-
-    float temp1 = notchFilterChannel1->applyFilter(FilterType::Notch, voltage1);
-    float temp2 = notchFilterChannel2->applyFilter(FilterType::Notch, voltage2);
+    float temp1 = notchFilterChannel1->applyFilter(FilterType::Notch, channel1);
+    float temp2 = notchFilterChannel2->applyFilter(FilterType::Notch, channel2);
 
     float fVoltage1 = lowPassFilterChannel1->applyFilter(FilterType::LowPass, temp1);
     float fVoltage2 = lowPassFilterChannel2->applyFilter(FilterType::LowPass, temp2);
 
 
     // Thêm vào Plotter
-    rawEegChannel1->addDataToBuffer(voltage1);
-    rawEegChannel2->addDataToBuffer(voltage2);
+    rawEegChannel1->addDataToBuffer(channel1);
+    rawEegChannel2->addDataToBuffer(channel2);
     filteredEegChannel1->addDataToBuffer(fVoltage1);
     filteredEegChannel2->addDataToBuffer(fVoltage2);
 }

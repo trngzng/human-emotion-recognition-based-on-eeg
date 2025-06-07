@@ -147,14 +147,10 @@ void DataParser::packetDectection(const QList<QByteArray> &inputData)
 
 void DataParser::packetParser(const QByteArray &data)
 {
-    for (int i = 0; i < 4; i++)
+    for (int i = 5; i < 10; i+=4)
     {
-        eegChannel2[i] = static_cast<uint8_t>(data[5 + i]);
-        eegChannel1[i] = static_cast<uint8_t>(data[9 + i]);
+        eegChannel[i] = static_cast<float>(static_cast<uint8_t>(data[i]) << 24 | static_cast<uint8_t>(data[i + 1]) << 16 |  static_cast<uint8_t>(data[i + 2]) << 8 |  static_cast<uint8_t>(data[i + 3]));
     }
 
-    QByteArray eeg1(reinterpret_cast<const char*>(eegChannel1), 4);
-    QByteArray eeg2(reinterpret_cast<const char*>(eegChannel2), 4);
-
-    emit valueOfEegChannels(eeg1, eeg2);
+    emit valueOfEegChannels(eegChannel[0], eegChannel[1]);
 }

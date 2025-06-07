@@ -12,7 +12,7 @@ public:
     explicit DataParser(QObject *parent = nullptr);
 
 signals:
-    void valueOfEegChannels(const QByteArray &channel1, const QByteArray &channel2);
+    void valueOfEegChannels(const float &channel1, const float &channel2);
 
 public slots:
     void packetDectection(const QList<QByteArray> &inputData);
@@ -35,8 +35,7 @@ private:
         FINISHED_PACKET
     };
     ParserState currentState = IDLE;
-    uint8_t eegChannel1[4];
-    uint8_t eegChannel2[4];
+    float eegChannel[2];
 };
 
 #endif // DATAPARSER_H
